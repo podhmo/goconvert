@@ -1,3 +1,4 @@
+import sys  # NOQA
 from collections import OrderedDict
 from collections import ChainMap
 from .langhelpers import titlize
@@ -335,7 +336,7 @@ def get_type_expr(type_path, container):
     if "." in last_type:
         module_type_path, name = last_type.rsplit(".", 1)
         module = container.world.modules_by_fullname[module_type_path]
-        if name in module:
+        if name in container.module:
             type_path = [*type_path[:-1], name]
         else:
             type_path = [*type_path[:-1], "{}.{}".format(module.name, name)]
@@ -455,12 +456,17 @@ class PseudoField(Field):
 
 
 class Function(object):
-    def __init__(self, name, body=None):
+    def __init__(self, name, parent, body=None):
         self.name = name
-        self.args = Parameters(tmp_prefix="v")
-        self.returns = Parameters(tmp_prefix="r")
+        self.parent = parent
+        self.args = Parameters(parent=self, tmp_prefix="v")
+        self.returns = Parameters(parent=self, tmp_prefix="r")
         self.body = body or []
         self.body_fn = None
+
+    @property
+    def module(self):
+        return self.parent.module
 
     def add_argument(self, definition, name):
         self.args.add(definition, name)
@@ -477,7 +483,8 @@ class Function(object):
 
 
 class Parameters(object):
-    def __init__(self, args_dict=None, tmp_prefix="v"):
+    def __init__(self, args_dict=None, parent=None, tmp_prefix="v"):
+        self.parent = parent
         self.args_dict = args_dict or OrderedDict()
         self.i = 0
         self.tmp_prefix = tmp_prefix
@@ -485,28 +492,41 @@ class Parameters(object):
     def __iter__(self):
         return self.args_dict.values()
 
+    @property
+    def module(self):
+        return self.parent.module
+
     def add(self, definition, name=""):
         uid = name
         if not uid:
             uid = "{}{}".format(self.tmp_prefix, self.i)
             self.i += 1
-        self.args_dict[uid] = Parameter(name, definition)
+        self.args_dict[uid] = Parameter(name, definition, parent=self)
 
     def __str__(self):
         return ", ".join(map(str, self.args_dict.values()))
 
 
 class Parameter(object):
-    def __init__(self, name, definition):
+    def __init__(self, name, definition, parent=None):
         self.name = name
         self.definition = definition
+        self.parent = parent
+
+    @property
+    def module(self):
+        return self.parent.module
+
+    @property
+    def world(self):
+        return self.module.parent
 
     @reify
     def type_expr(self):
         if isinstance(self.definition, (str, bytes)):
             return self.definition
         else:
-            return get_type_expr(self.definition.type_path, self.definition)
+            return get_type_expr(self.definition.type_path, self)
 
     def __str__(self):
         if self.name:

@@ -6,7 +6,8 @@ from goconvert.structure import (  # NOQA
     Struct,
     Interface,
     Alias,
-    Function
+    Function,
+    Parameter,
 )
 from goconvert.reader import Reader  # NOQA
 from goconvert.writer import Writer  # NOQA
