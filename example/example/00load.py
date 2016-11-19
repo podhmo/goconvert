@@ -15,8 +15,8 @@ def run(src_file):
     m = GoModule()
     m.comment("from: skill.go")
     writer.write_file(world.modules["src"].files["../src/skill.go"], m=m)
-    m.comment("from: person.go")
-    writer.write_file(world.modules["src"].files["../src/person.go"], m=m)
+    m.comment("from: user.go")
+    writer.write_file(world.modules["src"].files["../src/user.go"], m=m)
     print(m)
 
 
