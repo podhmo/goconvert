@@ -12,8 +12,12 @@ def run(src_file):
     with open(src_file) as rf:
         world = reader.read_world(json.load(rf, object_pairs_hook=OrderedDict))
         world.normalize()
-    print(writer.write_file(world.modules["src"].files["../src/skill.go"], m=GoModule()))
-    print(writer.write_file(world.modules["src"].files["../src/person.go"], m=GoModule()))
+    m = GoModule()
+    m.comment("from: skill.go")
+    writer.write_file(world.modules["src"].files["../src/skill.go"], m=m)
+    m.comment("from: person.go")
+    writer.write_file(world.modules["src"].files["../src/person.go"], m=m)
+    print(m)
 
 
 def main():

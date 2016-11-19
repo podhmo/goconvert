@@ -23,7 +23,11 @@
               "fields": {
                 "Email": {
                   "name": "Email",
-                  "tags": {},
+                  "tags": {
+                    "json": [
+                      "email"
+                    ]
+                  },
                   "type": {
                     "kind": "primitive",
                     "value": "Email"
@@ -32,7 +36,11 @@
                 },
                 "Name": {
                   "name": "Name",
-                  "tags": {},
+                  "tags": {
+                    "json": [
+                      "name"
+                    ]
+                  },
                   "type": {
                     "kind": "primitive",
                     "value": "string"
@@ -69,7 +77,11 @@
               "fields": {
                 "Name": {
                   "name": "Name",
-                  "tags": {},
+                  "tags": {
+                    "json": [
+                      "name"
+                    ]
+                  },
                   "type": {
                     "kind": "primitive",
                     "value": "SkillName"

@@ -1,10 +1,13 @@
+// from: skill.go
 package src
 
 type Skill struct {
-	Name SkillName  
+	Name SkillName  json:"name"
 }
 
 type SkillName string
+
+// from: person.go
 package src
 
 import (
@@ -12,8 +15,8 @@ import (
 )
 
 type User struct {
-	Email Email  
-	Name string  
+	Email Email  json:"email"
+	Name string  json:"name"
 }
 
 type Email Email

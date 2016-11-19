@@ -3,5 +3,5 @@ package src
 type SkillName string
 
 type Skill struct {
-	Name SkillName
+	Name SkillName `json:"name"`
 }

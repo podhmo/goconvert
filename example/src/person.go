@@ -7,6 +7,6 @@ type Email strfmt.Email
 
 // User :
 type User struct {
-	Name  string
-	Email Email
+	Name  string `json:"name"`
+	Email Email  `json:"email"`
 }
