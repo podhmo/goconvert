@@ -4,7 +4,7 @@ from . import structure
 class Reader(object):
     def read_world(self, data, parent=None):
         world = structure.World(parent=parent, reader=self)
-        for name, module in data["module"].items():
+        for name, module in (data.get("module") or []).items():
             world.read_module(name, module)
         return world
 
@@ -15,13 +15,16 @@ class Reader(object):
         return module
 
     def read_file(self, data, parent=None):
-        file = structure.File(data["name"], data["import"], parent=parent, reader=self)
-        for name, alias in data["alias"].items():
-            file.read_alias(name, alias)
-        for name, struct in data["struct"].items():
-            file.read_struct(name, struct)
-        for name, interface in data["interface"].items():
-            file.read_interface(name, interface)
+        file = structure.File(data["name"], (data.get("import") or []), parent=parent, reader=self)
+        if "alias" in data:
+            for name, alias in data["alias"].items():
+                file.read_alias(name, alias)
+        if "struct" in data:
+            for name, struct in data["struct"].items():
+                file.read_struct(name, struct)
+        if "interface" in data:
+            for name, interface in data["interface"].items():
+                file.read_interface(name, interface)
         return file
 
     def read_struct(self, data, parent=None):

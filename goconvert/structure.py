@@ -211,6 +211,24 @@ class Alias(object):
         return self.parent
 
 
+class Pointer(object):
+    def __init__(self, definition):
+        self.definition = definition
+
+    @reify
+    def type_path(self):
+        r = ["pointer"]
+        r.extend(self.definition.type_path)
+        return r
+
+    @reify
+    def type_expr(self):
+        return get_type_expr(self.type_path, self)
+
+    def __getattr__(self, name):
+        return getattr(self.definition, name)
+
+
 class Struct(object):
     def __init__(self, name, data, parent=None, reader=None):
         self.name = name
@@ -218,6 +236,10 @@ class Struct(object):
         self.reader = reader
         self.data = data
         self.fields = OrderedDict()
+
+    @reify
+    def pointer(self):
+        return Pointer(self)
 
     @property
     def package_name(self):
@@ -228,6 +250,14 @@ class Struct(object):
     @property
     def fullname(self):
         return self.module.fulladdress(self.name)
+
+    @reify
+    def type_path(self):
+        return [self.fullname]
+
+    @reify
+    def type_expr(self):
+        return get_type_expr(self.type_path, self)
 
     def read_field(self, name, field):
         field = self.reader.read_field(field, self)
@@ -274,6 +304,10 @@ class Interface(object):
     @property
     def fullname(self):
         return self.module.fulladdress(self.name)
+
+    @reify
+    def type_path(self):
+        return [self.fullname]
 
     def dump(self, writer):
         return writer.write_interface(self)
@@ -418,3 +452,64 @@ class PseudoField(Field):
     def __init__(self, field, *args, **kwargs):
         self.field = field
         super().__init__(*args, **kwargs)
+
+
+class Function(object):
+    def __init__(self, name, body=None):
+        self.name = name
+        self.args = Parameters(tmp_prefix="v")
+        self.returns = Parameters(tmp_prefix="r")
+        self.body = body or []
+        self.body_fn = None
+
+    def add_argument(self, definition, name):
+        self.args.add(definition, name)
+
+    def add_returns(self, definition, name=""):
+        self.returns.add(definition, name)
+
+    def body_function(self, fn):
+        self.body_fn = fn
+        return fn
+
+    def dump(self, writer, iw=None):
+        return writer.write_function(self, iw=iw)
+
+
+class Parameters(object):
+    def __init__(self, args_dict=None, tmp_prefix="v"):
+        self.args_dict = args_dict or OrderedDict()
+        self.i = 0
+        self.tmp_prefix = tmp_prefix
+
+    def __iter__(self):
+        return self.args_dict.values()
+
+    def add(self, definition, name=""):
+        uid = name
+        if not uid:
+            uid = "{}{}".format(self.tmp_prefix, self.i)
+            self.i += 1
+        self.args_dict[uid] = Parameter(name, definition)
+
+    def __str__(self):
+        return ", ".join(map(str, self.args_dict.values()))
+
+
+class Parameter(object):
+    def __init__(self, name, definition):
+        self.name = name
+        self.definition = definition
+
+    @reify
+    def type_expr(self):
+        if isinstance(self.definition, (str, bytes)):
+            return self.definition
+        else:
+            return get_type_expr(self.definition.type_path, self.definition)
+
+    def __str__(self):
+        if self.name:
+            return "{e.name} {e.type_expr}".format(e=self)
+        else:
+            return "{e.type_expr}".format(e=self)

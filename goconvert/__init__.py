@@ -5,7 +5,8 @@ from goconvert.structure import (  # NOQA
     File,
     Struct,
     Interface,
-    Alias
+    Alias,
+    Function
 )
 from goconvert.reader import Reader  # NOQA
 from goconvert.writer import Writer  # NOQA

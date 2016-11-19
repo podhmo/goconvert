@@ -1,4 +1,5 @@
 import sys
+import contextlib
 from prestring.go import GoModule
 
 
@@ -13,16 +14,11 @@ class Writer(object):
         print("-- write: {} --".format(file.name), file=sys.stderr)
         m = m or self.m
         self.write_packagename(file, m=m)
-        import_part = m.submodule()
-        if iw is None:
-            with import_part.import_group() as im:
-                iw = ImportWriter(im)
-        for struct in file.structs.values():
-            self.write_struct(struct, m=m, iw=iw)
-        for alias in file.aliases.values():
-            self.write_alias(alias, m=m, iw=iw)
-        if not iw.used:
-            import_part.body.body.clear()
+        with self.with_import(m, iw) as iw:
+            for struct in file.structs.values():
+                self.write_struct(struct, m=m, iw=iw)
+            for alias in file.aliases.values():
+                self.write_alias(alias, m=m, iw=iw)
         return m
 
     def write_packagename(self, file, m=None, iw=None):
@@ -62,6 +58,13 @@ class Writer(object):
                     const("{} {} = {}".format(c["name"], alias["name"], c["value"]))
         return m
 
+    def write_function(self, fn, m=None, iw=None):
+        m = m or self.m
+        if fn.body_fn:
+            return fn.body_fn(m, iw) or m
+        else:
+            raise NotImplementedError("write_function")
+
     def write_comment(self, target, m=None, iw=None):
         m = m or self.m
         if "comment" in target:
@@ -69,6 +72,16 @@ class Writer(object):
             return m
         else:
             return None
+
+    @contextlib.contextmanager
+    def with_import(self, m, iw=None):
+        import_part = m.submodule()
+        if iw is None:
+            with import_part.import_group() as im:
+                iw = ImportWriter(im)
+        yield iw
+        if not iw.used:
+            import_part.body.body.clear()
 
 
 class ImportWriter(object):
@@ -95,8 +108,11 @@ class ImportWriter(object):
 
     def import_(self, module, as_=None):
         prefix = as_ or self._get_prefix(module)
-        if module.fullname in self.used:
-            return prefix
-        self.used.add(module.fullname)
-        self.im.import_(module.fullname, as_=prefix)
-        return prefix
+        return self.import_fullname(module.fullname, as_=prefix)
+
+    def import_fullname(self, fullname, as_=None):
+        if fullname in self.used:
+            return as_
+        self.used.add(fullname)
+        self.im.import_(fullname, as_=as_)
+        return as_
