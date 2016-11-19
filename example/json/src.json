@@ -1035,210 +1035,6 @@
       "fullname": "io_test",
       "file": {}
     },
-    "ioutil": {
-      "name": "ioutil",
-      "fullname": "ioutil",
-      "file": {}
-    },
-    "ioutil_test": {
-      "name": "ioutil_test",
-      "fullname": "ioutil_test",
-      "file": {}
-    },
-    "main": {
-      "name": "main",
-      "fullname": "main",
-      "file": {
-        "/opt/local/lib/go/src/crypto/md5/gen.go": {
-          "name": "/opt/local/lib/go/src/crypto/md5/gen.go",
-          "struct": {
-            "Data": {
-              "name": "Data",
-              "fields": {
-                "Full": {
-                  "name": "Full",
-                  "tags": {},
-                  "type": {
-                    "kind": "primitive",
-                    "value": "bool"
-                  },
-                  "embed": false
-                },
-                "Shift1": {
-                  "name": "Shift1",
-                  "tags": {},
-                  "type": {
-                    "kind": "array",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "int"
-                    }
-                  },
-                  "embed": false
-                },
-                "Shift2": {
-                  "name": "Shift2",
-                  "tags": {},
-                  "type": {
-                    "kind": "array",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "int"
-                    }
-                  },
-                  "embed": false
-                },
-                "Shift3": {
-                  "name": "Shift3",
-                  "tags": {},
-                  "type": {
-                    "kind": "array",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "int"
-                    }
-                  },
-                  "embed": false
-                },
-                "Shift4": {
-                  "name": "Shift4",
-                  "tags": {},
-                  "type": {
-                    "kind": "array",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "int"
-                    }
-                  },
-                  "embed": false
-                },
-                "Table1": {
-                  "name": "Table1",
-                  "tags": {},
-                  "type": {
-                    "kind": "array",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "uint32"
-                    }
-                  },
-                  "embed": false
-                },
-                "Table2": {
-                  "name": "Table2",
-                  "tags": {},
-                  "type": {
-                    "kind": "array",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "uint32"
-                    }
-                  },
-                  "embed": false
-                },
-                "Table3": {
-                  "name": "Table3",
-                  "tags": {},
-                  "type": {
-                    "kind": "array",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "uint32"
-                    }
-                  },
-                  "embed": false
-                },
-                "Table4": {
-                  "name": "Table4",
-                  "tags": {},
-                  "type": {
-                    "kind": "array",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "uint32"
-                    }
-                  },
-                  "embed": false
-                },
-                "a": {
-                  "name": "a",
-                  "tags": {},
-                  "type": {
-                    "kind": "primitive",
-                    "value": "string"
-                  },
-                  "embed": false
-                },
-                "b": {
-                  "name": "b",
-                  "tags": {},
-                  "type": {
-                    "kind": "primitive",
-                    "value": "string"
-                  },
-                  "embed": false
-                },
-                "c": {
-                  "name": "c",
-                  "tags": {},
-                  "type": {
-                    "kind": "primitive",
-                    "value": "string"
-                  },
-                  "embed": false
-                },
-                "d": {
-                  "name": "d",
-                  "tags": {},
-                  "type": {
-                    "kind": "primitive",
-                    "value": "string"
-                  },
-                  "embed": false
-                }
-              }
-            }
-          },
-          "import": {
-            "bytes": {
-              "name": "bytes",
-              "fullname": "bytes",
-              "needparse": false
-            },
-            "flag": {
-              "name": "flag",
-              "fullname": "flag",
-              "needparse": false
-            },
-            "format": {
-              "name": "format",
-              "fullname": "go/format",
-              "needparse": false
-            },
-            "ioutil": {
-              "name": "ioutil",
-              "fullname": "io/ioutil",
-              "needparse": false
-            },
-            "log": {
-              "name": "log",
-              "fullname": "log",
-              "needparse": false
-            },
-            "strings": {
-              "name": "strings",
-              "fullname": "strings",
-              "needparse": false
-            },
-            "template": {
-              "name": "template",
-              "fullname": "text/template",
-              "needparse": false
-            }
-          }
-        }
-      }
-    },
     "md5": {
       "name": "md5",
       "fullname": "md5",
@@ -3912,7 +3708,7 @@
     },
     "src": {
       "name": "src",
-      "fullname": "",
+      "fullname": "vert/example/src",
       "file": {
         "../src/skill.go": {
           "name": "../src/skill.go",
@@ -5105,6 +4901,10 @@
               },
               "candidates": [
                 {
+                  "name": "ErrInternalError",
+                  "value": "\"regexp/syntax: internal error\""
+                },
+                {
                   "name": "ErrInvalidCharClass",
                   "value": "\"invalid character class\""
                 },
@@ -5113,52 +4913,48 @@
                   "value": "\"invalid character class range\""
                 },
                 {
-                  "name": "ErrInvalidUTF8",
-                  "value": "\"invalid UTF-8\""
-                },
-                {
                   "name": "ErrInvalidEscape",
                   "value": "\"invalid escape sequence\""
-                },
-                {
-                  "name": "ErrTrailingBackslash",
-                  "value": "\"trailing backslash at end of expression\""
-                },
-                {
-                  "name": "ErrInvalidRepeatSize",
-                  "value": "\"invalid repeat count\""
-                },
-                {
-                  "name": "ErrUnexpectedParen",
-                  "value": "\"unexpected )\""
-                },
-                {
-                  "name": "ErrInvalidPerlOp",
-                  "value": "\"invalid or unsupported Perl syntax\""
                 },
                 {
                   "name": "ErrInvalidNamedCapture",
                   "value": "\"invalid named capture\""
                 },
                 {
+                  "name": "ErrInvalidPerlOp",
+                  "value": "\"invalid or unsupported Perl syntax\""
+                },
+                {
                   "name": "ErrInvalidRepeatOp",
                   "value": "\"invalid nested repetition operator\""
                 },
                 {
-                  "name": "ErrInternalError",
-                  "value": "\"regexp/syntax: internal error\""
+                  "name": "ErrInvalidRepeatSize",
+                  "value": "\"invalid repeat count\""
                 },
                 {
-                  "name": "ErrMissingParen",
-                  "value": "\"missing closing )\""
+                  "name": "ErrInvalidUTF8",
+                  "value": "\"invalid UTF-8\""
                 },
                 {
                   "name": "ErrMissingBracket",
                   "value": "\"missing closing ]\""
                 },
                 {
+                  "name": "ErrMissingParen",
+                  "value": "\"missing closing )\""
+                },
+                {
                   "name": "ErrMissingRepeatArgument",
                   "value": "\"missing argument to repetition operator\""
+                },
+                {
+                  "name": "ErrTrailingBackslash",
+                  "value": "\"trailing backslash at end of expression\""
+                },
+                {
+                  "name": "ErrUnexpectedParen",
+                  "value": "\"unexpected )\""
                 }
               ]
             },
@@ -5170,12 +4966,12 @@
               },
               "candidates": [
                 {
-                  "name": "POSIX",
-                  "value": "0"
-                },
-                {
                   "name": "FoldCase",
                   "value": "1"
+                },
+                {
+                  "name": "POSIX",
+                  "value": "0"
                 }
               ]
             }
@@ -5819,11 +5615,11 @@
                   "value": "1"
                 },
                 {
-                  "name": "minDuration",
+                  "name": "maxDuration",
                   "value": "1"
                 },
                 {
-                  "name": "maxDuration",
+                  "name": "minDuration",
                   "value": "1"
                 }
               ]

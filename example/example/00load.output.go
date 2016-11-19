@@ -2,7 +2,7 @@
 package src
 
 type Skill struct {
-	ID ObjectId  bson:"_id" json:"id"
+	ID bson.ObjectId  bson:"_id" json:"id"
 	Name SkillName  json:"name"
 }
 
@@ -17,12 +17,12 @@ import (
 
 type User struct {
 	Email Email  json:"email"
-	FacebookAuthID *ObjectId  bson:"facebookAuthId,omitempty" json:"facebookAuthId,omitempty"
-	GithubAuthID *ObjectId  bson:"githubAuthId,omitempty" json:"githubAuthId,omitempty"
-	GoogleAuthID *ObjectId  bson:"googleAuthId,omitempty" json:"googleAuthId,omitempty"
-	ID ObjectId  bson:"_id" json:"id"
+	FacebookAuthID *bson.ObjectId  bson:"facebookAuthId,omitempty" json:"facebookAuthId,omitempty"
+	GithubAuthID *bson.ObjectId  bson:"githubAuthId,omitempty" json:"githubAuthId,omitempty"
+	GoogleAuthID *bson.ObjectId  bson:"googleAuthId,omitempty" json:"googleAuthId,omitempty"
+	ID bson.ObjectId  bson:"_id" json:"id"
 	Name string  json:"name"
-	TwitterAuthID *ObjectId  bson:"twitterAuthId,omitempty" json:"twitterAuthId,omitempty"
+	TwitterAuthID *bson.ObjectId  bson:"twitterAuthId,omitempty" json:"twitterAuthId,omitempty"
 }
 
 type Email Email

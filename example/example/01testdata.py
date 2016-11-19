@@ -1,46 +1,51 @@
+import sys  # NOQA
 import argparse
 import json
+import goconvert
 from collections import OrderedDict
 from goconvert import Reader
 from goconvert import Writer
 from prestring.go import GoModule
 
-from goconvert import Function
 from goconvert.langhelpers import titlize
 
 
-def build_create_empty_struct_func(struct):
+def build_create_empty_struct_func(struct, parent):
     name = "Empty{}".format(titlize(struct.name))
-    func = Function(name)
+    func = goconvert.Function(name, parent=parent)
     func.add_returns(struct)
+
+    # TODO: import struct
+    struct_type = goconvert.Parameter("", struct, parent=func)
 
     @func.body_function
     def write(m, iw):
+        iw.import_(struct.module)
         m.comment("{fnname} : creates empty {structname}".format(fnname=name, structname=struct.name))
         with m.func(func.name, func.args, return_=func.returns):
-            with m.block("value := {struct.name}".format(struct=struct)):
+            with m.block("value := {name}".format(name=struct_type.type_expr)):
                 val_part = m.submodule()
 
             for field in struct.fields.values():
-                if field.definition.fullname == "gopkg.in/mgo.v2/bson.ObjectId":
-                    if "pointer" in field.type_path:
-                        m.comment("{name} is *bson.ObjectId".format(name=field.name))
-                    else:
-                        iw.import_fullname("gopkg.in/mgo.v2/bson", as_="bson")
-                        val_part.stmt("{name}: bson.NewObjectId(),".format(name=field.name))
+                if tuple(field.type_path) == ("gopkg.in/mgo.v2/bson.ObjectId",):
+                    iw.import_fullname("gopkg.in/mgo.v2/bson", as_="bson")
+                    val_part.stmt("{name}: bson.NewObjectId(),".format(name=field.name))
             m.return_("value")
     return func
 
 
-def build_create_struct_func(struct):
+def build_create_struct_func(struct, parent):
     creates_empty_name = "Empty{}".format(titlize(struct.name))
     name = titlize(struct.name)
-    func = Function(name)
-    func.add_argument("func(value {})".format(struct.pointer.type_expr), "modify")
+    func = goconvert.Function(name, parent=parent)
+
+    pointer_type = goconvert.Parameter("", struct.pointer, parent=func)
+    func.add_argument("func(value {})".format(pointer_type.type_expr), "modify")
     func.add_returns(struct.pointer)
 
     @func.body_function
     def write(m, iw):
+        iw.import_(struct.module)
         m.comment("{fnname} : creates {structname} with modify function".format(fnname=name, structname=struct.name))
         with m.func(func.name, func.args, return_=func.returns):
             m.stmt("value := {fnname}()".format(fnname=creates_empty_name))
@@ -49,7 +54,7 @@ def build_create_struct_func(struct):
     return func
 
 
-def run(src_file):
+def run(src_file, package_name, src_package):
     reader = Reader()
     with open(src_file) as rf:
         world = reader.read_world(json.load(rf, object_pairs_hook=OrderedDict))
@@ -57,27 +62,26 @@ def run(src_file):
 
     m = GoModule()
     writer = Writer(m)
+
+    m.package(package_name)
+
+    module = goconvert.Module(package_name, package_name, parent=world)
+    new_file = goconvert.File("{}.go".format(package_name), {}, parent=module)
     with writer.with_import(m) as iw:
-        build_create_empty_struct_func(world["src"]["User"]).dump(writer, iw=iw)
-        build_create_struct_func(world["src"]["User"]).dump(writer, iw=iw)
-        build_create_empty_struct_func(world["src"]["Skill"]).dump(writer, iw=iw)
-        build_create_struct_func(world["src"]["Skill"]).dump(writer, iw=iw)
-        build_create_empty_struct_func(world["src"]["FacebookAuth"]).dump(writer, iw=iw)
-        build_create_struct_func(world["src"]["FacebookAuth"]).dump(writer, iw=iw)
-        build_create_empty_struct_func(world["src"]["GoogleAuth"]).dump(writer, iw=iw)
-        build_create_struct_func(world["src"]["GoogleAuth"]).dump(writer, iw=iw)
-        build_create_empty_struct_func(world["src"]["TwitterAuth"]).dump(writer, iw=iw)
-        build_create_struct_func(world["src"]["TwitterAuth"]).dump(writer, iw=iw)
-        build_create_empty_struct_func(world["src"]["GithubAuth"]).dump(writer, iw=iw)
-        build_create_struct_func(world["src"]["GithubAuth"]).dump(writer, iw=iw)
+        for file in world.modules[src_package].files.values():
+            for struct in file.structs.values():
+                build_create_empty_struct_func(struct, parent=new_file).dump(writer, iw=iw)
+                build_create_struct_func(struct, parent=new_file).dump(writer, iw=iw)
     print(m)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--src", required=True)
+    parser.add_argument("--src-package", required=True)
+    parser.add_argument("--package", required=True)
     args = parser.parse_args()
-    return run(args.src)
+    return run(args.src, args.package, args.src_package)
 
 if __name__ == "__main__":
     main()

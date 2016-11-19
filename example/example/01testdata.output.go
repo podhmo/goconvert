@@ -1,44 +1,28 @@
+package testdata
+
 import (
+	src "vert/example/src"
 	bson "gopkg.in/mgo.v2/bson"
 )
 
-// EmptyUser : creates empty User
-func EmptyUser() User {
-	value := User {
-		ID: bson.NewObjectId(),
-	}
-	// FacebookAuthID is *bson.ObjectId
-	// GithubAuthID is *bson.ObjectId
-	// GoogleAuthID is *bson.ObjectId
-	// TwitterAuthID is *bson.ObjectId
-	return value
-}
-
-// User : creates User with modify function
-func User(modify func(value *User)) *User {
-	value := EmptyUser()
-	modify(&value)
-	return &value
-}
-
 // EmptySkill : creates empty Skill
-func EmptySkill() Skill {
-	value := Skill {
+func EmptySkill() src.Skill {
+	value := src.Skill {
 		ID: bson.NewObjectId(),
 	}
 	return value
 }
 
 // Skill : creates Skill with modify function
-func Skill(modify func(value *Skill)) *Skill {
+func Skill(modify func(value *src.Skill)) *src.Skill {
 	value := EmptySkill()
 	modify(&value)
 	return &value
 }
 
 // EmptyFacebookAuth : creates empty FacebookAuth
-func EmptyFacebookAuth() FacebookAuth {
-	value := FacebookAuth {
+func EmptyFacebookAuth() src.FacebookAuth {
+	value := src.FacebookAuth {
 		Id: bson.NewObjectId(),
 		UserId: bson.NewObjectId(),
 	}
@@ -46,47 +30,15 @@ func EmptyFacebookAuth() FacebookAuth {
 }
 
 // FacebookAuth : creates FacebookAuth with modify function
-func FacebookAuth(modify func(value *FacebookAuth)) *FacebookAuth {
+func FacebookAuth(modify func(value *src.FacebookAuth)) *src.FacebookAuth {
 	value := EmptyFacebookAuth()
 	modify(&value)
 	return &value
 }
 
-// EmptyGoogleAuth : creates empty GoogleAuth
-func EmptyGoogleAuth() GoogleAuth {
-	value := GoogleAuth {
-		Id: bson.NewObjectId(),
-		UserId: bson.NewObjectId(),
-	}
-	return value
-}
-
-// GoogleAuth : creates GoogleAuth with modify function
-func GoogleAuth(modify func(value *GoogleAuth)) *GoogleAuth {
-	value := EmptyGoogleAuth()
-	modify(&value)
-	return &value
-}
-
-// EmptyTwitterAuth : creates empty TwitterAuth
-func EmptyTwitterAuth() TwitterAuth {
-	value := TwitterAuth {
-		Id: bson.NewObjectId(),
-		UserId: bson.NewObjectId(),
-	}
-	return value
-}
-
-// TwitterAuth : creates TwitterAuth with modify function
-func TwitterAuth(modify func(value *TwitterAuth)) *TwitterAuth {
-	value := EmptyTwitterAuth()
-	modify(&value)
-	return &value
-}
-
 // EmptyGithubAuth : creates empty GithubAuth
-func EmptyGithubAuth() GithubAuth {
-	value := GithubAuth {
+func EmptyGithubAuth() src.GithubAuth {
+	value := src.GithubAuth {
 		Id: bson.NewObjectId(),
 		UserId: bson.NewObjectId(),
 	}
@@ -94,8 +46,55 @@ func EmptyGithubAuth() GithubAuth {
 }
 
 // GithubAuth : creates GithubAuth with modify function
-func GithubAuth(modify func(value *GithubAuth)) *GithubAuth {
+func GithubAuth(modify func(value *src.GithubAuth)) *src.GithubAuth {
 	value := EmptyGithubAuth()
+	modify(&value)
+	return &value
+}
+
+// EmptyGoogleAuth : creates empty GoogleAuth
+func EmptyGoogleAuth() src.GoogleAuth {
+	value := src.GoogleAuth {
+		Id: bson.NewObjectId(),
+		UserId: bson.NewObjectId(),
+	}
+	return value
+}
+
+// GoogleAuth : creates GoogleAuth with modify function
+func GoogleAuth(modify func(value *src.GoogleAuth)) *src.GoogleAuth {
+	value := EmptyGoogleAuth()
+	modify(&value)
+	return &value
+}
+
+// EmptyTwitterAuth : creates empty TwitterAuth
+func EmptyTwitterAuth() src.TwitterAuth {
+	value := src.TwitterAuth {
+		Id: bson.NewObjectId(),
+		UserId: bson.NewObjectId(),
+	}
+	return value
+}
+
+// TwitterAuth : creates TwitterAuth with modify function
+func TwitterAuth(modify func(value *src.TwitterAuth)) *src.TwitterAuth {
+	value := EmptyTwitterAuth()
+	modify(&value)
+	return &value
+}
+
+// EmptyUser : creates empty User
+func EmptyUser() src.User {
+	value := src.User {
+		ID: bson.NewObjectId(),
+	}
+	return value
+}
+
+// User : creates User with modify function
+func User(modify func(value *src.User)) *src.User {
+	value := EmptyUser()
 	modify(&value)
 	return &value
 }

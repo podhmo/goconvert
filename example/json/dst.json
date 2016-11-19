@@ -348,7 +348,7 @@
     },
     "dst": {
       "name": "dst",
-      "fullname": "",
+      "fullname": "vert/example/dst",
       "file": {
         "../dst/person.go": {
           "name": "../dst/person.go",
@@ -635,21 +635,6 @@
     "io_test": {
       "name": "io_test",
       "fullname": "io_test",
-      "file": {}
-    },
-    "ioutil": {
-      "name": "ioutil",
-      "fullname": "ioutil",
-      "file": {}
-    },
-    "ioutil_test": {
-      "name": "ioutil_test",
-      "fullname": "ioutil_test",
-      "file": {}
-    },
-    "main": {
-      "name": "main",
-      "fullname": "main",
       "file": {}
     },
     "regexp": {
@@ -1378,28 +1363,8 @@
               },
               "candidates": [
                 {
-                  "name": "ErrInvalidNamedCapture",
-                  "value": "\"invalid named capture\""
-                },
-                {
-                  "name": "ErrMissingRepeatArgument",
-                  "value": "\"missing argument to repetition operator\""
-                },
-                {
-                  "name": "ErrTrailingBackslash",
-                  "value": "\"trailing backslash at end of expression\""
-                },
-                {
-                  "name": "ErrInvalidRepeatOp",
-                  "value": "\"invalid nested repetition operator\""
-                },
-                {
-                  "name": "ErrUnexpectedParen",
-                  "value": "\"unexpected )\""
-                },
-                {
-                  "name": "ErrMissingParen",
-                  "value": "\"missing closing )\""
+                  "name": "ErrInternalError",
+                  "value": "\"regexp/syntax: internal error\""
                 },
                 {
                   "name": "ErrInvalidCharClass",
@@ -1410,28 +1375,48 @@
                   "value": "\"invalid character class range\""
                 },
                 {
-                  "name": "ErrInvalidRepeatSize",
-                  "value": "\"invalid repeat count\""
-                },
-                {
-                  "name": "ErrMissingBracket",
-                  "value": "\"missing closing ]\""
-                },
-                {
-                  "name": "ErrInternalError",
-                  "value": "\"regexp/syntax: internal error\""
-                },
-                {
                   "name": "ErrInvalidEscape",
                   "value": "\"invalid escape sequence\""
+                },
+                {
+                  "name": "ErrInvalidNamedCapture",
+                  "value": "\"invalid named capture\""
                 },
                 {
                   "name": "ErrInvalidPerlOp",
                   "value": "\"invalid or unsupported Perl syntax\""
                 },
                 {
+                  "name": "ErrInvalidRepeatOp",
+                  "value": "\"invalid nested repetition operator\""
+                },
+                {
+                  "name": "ErrInvalidRepeatSize",
+                  "value": "\"invalid repeat count\""
+                },
+                {
                   "name": "ErrInvalidUTF8",
                   "value": "\"invalid UTF-8\""
+                },
+                {
+                  "name": "ErrMissingBracket",
+                  "value": "\"missing closing ]\""
+                },
+                {
+                  "name": "ErrMissingParen",
+                  "value": "\"missing closing )\""
+                },
+                {
+                  "name": "ErrMissingRepeatArgument",
+                  "value": "\"missing argument to repetition operator\""
+                },
+                {
+                  "name": "ErrTrailingBackslash",
+                  "value": "\"trailing backslash at end of expression\""
+                },
+                {
+                  "name": "ErrUnexpectedParen",
+                  "value": "\"unexpected )\""
                 }
               ]
             },
@@ -1934,15 +1919,15 @@
               },
               "candidates": [
                 {
-                  "name": "minDuration",
-                  "value": "1"
-                },
-                {
                   "name": "Nanosecond",
                   "value": "1"
                 },
                 {
                   "name": "maxDuration",
+                  "value": "1"
+                },
+                {
+                  "name": "minDuration",
                   "value": "1"
                 }
               ]
