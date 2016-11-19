@@ -359,6 +359,10 @@ class Field(object):
     def type(self):
         return self.data["type"]
 
+    @property
+    def tags(self):
+        return self.data["tags"]
+
     @reify
     def type_expr(self):
         return get_type_expr(self.type_path, self)

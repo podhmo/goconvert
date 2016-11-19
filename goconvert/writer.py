@@ -47,10 +47,9 @@ class Writer(object):
                     m.stmt(field.type_expr)
                 else:
                     m.stmt("{} {}".format(field.name, field.type_expr))
-                if "tags" in field.data:
-                    m.insert_after("  ")
-                    for tag in field.data["tags"]:
-                        m.insert_after(tag)
+                if field.tags:
+                    tags = " ".join(['{}:"{}"'.format(tag, ",".join(args)) for tag, args in field.tags.items()])
+                    m.insert_after("  {}".format(tags))
         return m
 
     def write_alias(self, alias, m=None, iw=None):
