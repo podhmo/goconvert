@@ -1,0 +1,1077 @@
+{
+  "module": {
+    "src": {
+      "name": "src",
+      "fullname": "",
+      "file": {
+        "../src/person.go": {
+          "name": "../src/person.go",
+          "alias": {
+            "Email": {
+              "name": "Email",
+              "original": {
+                "kind": "selector",
+                "prefix": "strfmt",
+                "value": "Email"
+              },
+              "candidates": null
+            }
+          },
+          "struct": {
+            "User": {
+              "name": "User",
+              "fields": {
+                "Email": {
+                  "name": "Email",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Email"
+                  },
+                  "embed": false
+                },
+                "Name": {
+                  "name": "Name",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "string"
+                  },
+                  "embed": false
+                }
+              }
+            }
+          },
+          "interface": {},
+          "import": {
+            "strfmt": {
+              "name": "strfmt",
+              "fullname": "github.com/go-openapi/strfmt",
+              "needparse": true
+            }
+          }
+        },
+        "../src/skill.go": {
+          "name": "../src/skill.go",
+          "alias": {
+            "SkillName": {
+              "name": "SkillName",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            }
+          },
+          "struct": {
+            "Skill": {
+              "name": "Skill",
+              "fields": {
+                "Name": {
+                  "name": "Name",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "SkillName"
+                  },
+                  "embed": false
+                }
+              }
+            }
+          },
+          "interface": {},
+          "import": {}
+        }
+      }
+    },
+    "strfmt": {
+      "name": "strfmt",
+      "fullname": "github.com/go-openapi/strfmt",
+      "file": {
+        "GOPATH://src/github.com/go-openapi/strfmt/date.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/date.go",
+          "alias": {
+            "Date": {
+              "name": "Date",
+              "original": {
+                "kind": "selector",
+                "prefix": "time",
+                "value": "Time"
+              },
+              "candidates": null
+            }
+          },
+          "struct": {},
+          "interface": {},
+          "import": {
+            "driver": {
+              "name": "driver",
+              "fullname": "database/sql/driver",
+              "needparse": false
+            },
+            "fmt": {
+              "name": "fmt",
+              "fullname": "fmt",
+              "needparse": false
+            },
+            "jlexer": {
+              "name": "jlexer",
+              "fullname": "github.com/mailru/easyjson/jlexer",
+              "needparse": false
+            },
+            "jwriter": {
+              "name": "jwriter",
+              "fullname": "github.com/mailru/easyjson/jwriter",
+              "needparse": false
+            },
+            "regexp": {
+              "name": "regexp",
+              "fullname": "regexp",
+              "needparse": false
+            },
+            "time": {
+              "name": "time",
+              "fullname": "time",
+              "needparse": true
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/date_test.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/date_test.go",
+          "alias": {},
+          "struct": {},
+          "interface": {},
+          "import": {
+            "assert": {
+              "name": "assert",
+              "fullname": "github.com/stretchr/testify/assert",
+              "needparse": false
+            },
+            "driver": {
+              "name": "driver",
+              "fullname": "database/sql/driver",
+              "needparse": false
+            },
+            "sql": {
+              "name": "sql",
+              "fullname": "database/sql",
+              "needparse": false
+            },
+            "testing": {
+              "name": "testing",
+              "fullname": "testing",
+              "needparse": false
+            },
+            "time": {
+              "name": "time",
+              "fullname": "time",
+              "needparse": false
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/default.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/default.go",
+          "alias": {
+            "Base64": {
+              "name": "Base64",
+              "original": {
+                "kind": "array",
+                "value": {
+                  "kind": "primitive",
+                  "value": "byte"
+                }
+              },
+              "candidates": null
+            },
+            "CreditCard": {
+              "name": "CreditCard",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "Email": {
+              "name": "Email",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "HexColor": {
+              "name": "HexColor",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "Hostname": {
+              "name": "Hostname",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "IPv4": {
+              "name": "IPv4",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "IPv6": {
+              "name": "IPv6",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "ISBN": {
+              "name": "ISBN",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "ISBN10": {
+              "name": "ISBN10",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "ISBN13": {
+              "name": "ISBN13",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "MAC": {
+              "name": "MAC",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "Password": {
+              "name": "Password",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "RGBColor": {
+              "name": "RGBColor",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "SSN": {
+              "name": "SSN",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "URI": {
+              "name": "URI",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "UUID": {
+              "name": "UUID",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "UUID3": {
+              "name": "UUID3",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "UUID4": {
+              "name": "UUID4",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "UUID5": {
+              "name": "UUID5",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            }
+          },
+          "struct": {},
+          "interface": {},
+          "import": {
+            "base64": {
+              "name": "base64",
+              "fullname": "encoding/base64",
+              "needparse": false
+            },
+            "driver": {
+              "name": "driver",
+              "fullname": "database/sql/driver",
+              "needparse": false
+            },
+            "fmt": {
+              "name": "fmt",
+              "fullname": "fmt",
+              "needparse": false
+            },
+            "govalidator": {
+              "name": "govalidator",
+              "fullname": "github.com/asaskevich/govalidator",
+              "needparse": false
+            },
+            "jlexer": {
+              "name": "jlexer",
+              "fullname": "github.com/mailru/easyjson/jlexer",
+              "needparse": false
+            },
+            "jwriter": {
+              "name": "jwriter",
+              "fullname": "github.com/mailru/easyjson/jwriter",
+              "needparse": false
+            },
+            "regexp": {
+              "name": "regexp",
+              "fullname": "regexp",
+              "needparse": false
+            },
+            "strings": {
+              "name": "strings",
+              "fullname": "strings",
+              "needparse": false
+            },
+            "url": {
+              "name": "url",
+              "fullname": "net/url",
+              "needparse": false
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/default_test.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/default_test.go",
+          "alias": {},
+          "struct": {},
+          "interface": {},
+          "import": {
+            "assert": {
+              "name": "assert",
+              "fullname": "github.com/stretchr/testify/assert",
+              "needparse": false
+            },
+            "testing": {
+              "name": "testing",
+              "fullname": "testing",
+              "needparse": false
+            },
+            "uuid": {
+              "name": "uuid",
+              "fullname": "github.com/pborman/uuid",
+              "needparse": false
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/doc.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/doc.go",
+          "alias": {},
+          "struct": {},
+          "interface": {},
+          "import": {}
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/duration.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/duration.go",
+          "alias": {
+            "Duration": {
+              "name": "Duration",
+              "original": {
+                "kind": "selector",
+                "prefix": "time",
+                "value": "Duration"
+              },
+              "candidates": null
+            }
+          },
+          "struct": {},
+          "interface": {},
+          "import": {
+            "driver": {
+              "name": "driver",
+              "fullname": "database/sql/driver",
+              "needparse": false
+            },
+            "fmt": {
+              "name": "fmt",
+              "fullname": "fmt",
+              "needparse": false
+            },
+            "jlexer": {
+              "name": "jlexer",
+              "fullname": "github.com/mailru/easyjson/jlexer",
+              "needparse": false
+            },
+            "jwriter": {
+              "name": "jwriter",
+              "fullname": "github.com/mailru/easyjson/jwriter",
+              "needparse": false
+            },
+            "regexp": {
+              "name": "regexp",
+              "fullname": "regexp",
+              "needparse": false
+            },
+            "strconv": {
+              "name": "strconv",
+              "fullname": "strconv",
+              "needparse": false
+            },
+            "strings": {
+              "name": "strings",
+              "fullname": "strings",
+              "needparse": false
+            },
+            "time": {
+              "name": "time",
+              "fullname": "time",
+              "needparse": true
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/duration_test.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/duration_test.go",
+          "alias": {},
+          "struct": {},
+          "interface": {},
+          "import": {
+            "assert": {
+              "name": "assert",
+              "fullname": "github.com/stretchr/testify/assert",
+              "needparse": false
+            },
+            "testing": {
+              "name": "testing",
+              "fullname": "testing",
+              "needparse": false
+            },
+            "time": {
+              "name": "time",
+              "fullname": "time",
+              "needparse": false
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/format.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/format.go",
+          "alias": {},
+          "struct": {
+            "defaultFormats": {
+              "name": "defaultFormats",
+              "fields": {
+                "Mutex": {
+                  "name": "Mutex",
+                  "tags": {},
+                  "type": {
+                    "kind": "selector",
+                    "prefix": "sync",
+                    "value": "Mutex"
+                  },
+                  "embed": true
+                },
+                "data": {
+                  "name": "data",
+                  "tags": {},
+                  "type": {
+                    "kind": "array",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "knownFormat"
+                    }
+                  },
+                  "embed": false
+                },
+                "normalizeName": {
+                  "name": "normalizeName",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "NameNormalizer"
+                  },
+                  "embed": false
+                }
+              }
+            },
+            "knownFormat": {
+              "name": "knownFormat",
+              "fields": {
+                "Name": {
+                  "name": "Name",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "string"
+                  },
+                  "embed": false
+                },
+                "OrigName": {
+                  "name": "OrigName",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "string"
+                  },
+                  "embed": false
+                },
+                "Type": {
+                  "name": "Type",
+                  "tags": {},
+                  "type": {
+                    "kind": "selector",
+                    "prefix": "reflect",
+                    "value": "Type"
+                  },
+                  "embed": false
+                },
+                "Validator": {
+                  "name": "Validator",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Validator"
+                  },
+                  "embed": false
+                }
+              }
+            }
+          },
+          "interface": {
+            "Format": {
+              "name": "Format"
+            },
+            "Registry": {
+              "name": "Registry"
+            }
+          },
+          "import": {
+            "encoding": {
+              "name": "encoding",
+              "fullname": "encoding",
+              "needparse": false
+            },
+            "errors": {
+              "name": "errors",
+              "fullname": "github.com/go-openapi/errors",
+              "needparse": false
+            },
+            "mapstructure": {
+              "name": "mapstructure",
+              "fullname": "github.com/mitchellh/mapstructure",
+              "needparse": false
+            },
+            "reflect": {
+              "name": "reflect",
+              "fullname": "reflect",
+              "needparse": true
+            },
+            "strings": {
+              "name": "strings",
+              "fullname": "strings",
+              "needparse": false
+            },
+            "sync": {
+              "name": "sync",
+              "fullname": "sync",
+              "needparse": true
+            },
+            "time": {
+              "name": "time",
+              "fullname": "time",
+              "needparse": false
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/format_test.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/format_test.go",
+          "alias": {
+            "bf": {
+              "name": "bf",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "testFormat": {
+              "name": "testFormat",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            },
+            "tf2": {
+              "name": "tf2",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
+            }
+          },
+          "struct": {
+            "testStruct": {
+              "name": "testStruct",
+              "fields": {
+                "B64": {
+                  "name": "B64",
+                  "tags": {
+                    "json": [
+                      "b64",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Base64"
+                  },
+                  "embed": false
+                },
+                "Creditcard": {
+                  "name": "Creditcard",
+                  "tags": {
+                    "json": [
+                      "creditcard",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "CreditCard"
+                  },
+                  "embed": false
+                },
+                "D": {
+                  "name": "D",
+                  "tags": {
+                    "json": [
+                      "d",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Date"
+                  },
+                  "embed": false
+                },
+                "DT": {
+                  "name": "DT",
+                  "tags": {
+                    "json": [
+                      "dt",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "DateTime"
+                  },
+                  "embed": false
+                },
+                "Dur": {
+                  "name": "Dur",
+                  "tags": {
+                    "json": [
+                      "dur",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Duration"
+                  },
+                  "embed": false
+                },
+                "Eml": {
+                  "name": "Eml",
+                  "tags": {
+                    "json": [
+                      "eml",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Email"
+                  },
+                  "embed": false
+                },
+                "Hexcolor": {
+                  "name": "Hexcolor",
+                  "tags": {
+                    "json": [
+                      "hexcolor",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "HexColor"
+                  },
+                  "embed": false
+                },
+                "Hn": {
+                  "name": "Hn",
+                  "tags": {
+                    "json": [
+                      "hn",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Hostname"
+                  },
+                  "embed": false
+                },
+                "Ipv4": {
+                  "name": "Ipv4",
+                  "tags": {
+                    "json": [
+                      "ipv4",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "IPv4"
+                  },
+                  "embed": false
+                },
+                "Ipv6": {
+                  "name": "Ipv6",
+                  "tags": {
+                    "json": [
+                      "ipv6",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "IPv6"
+                  },
+                  "embed": false
+                },
+                "Isbn": {
+                  "name": "Isbn",
+                  "tags": {
+                    "json": [
+                      "isbn",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "ISBN"
+                  },
+                  "embed": false
+                },
+                "Isbn10": {
+                  "name": "Isbn10",
+                  "tags": {
+                    "json": [
+                      "isbn10",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "ISBN10"
+                  },
+                  "embed": false
+                },
+                "Isbn13": {
+                  "name": "Isbn13",
+                  "tags": {
+                    "json": [
+                      "isbn13",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "ISBN13"
+                  },
+                  "embed": false
+                },
+                "Mac": {
+                  "name": "Mac",
+                  "tags": {
+                    "json": [
+                      "mac",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "MAC"
+                  },
+                  "embed": false
+                },
+                "Pw": {
+                  "name": "Pw",
+                  "tags": {
+                    "json": [
+                      "pw",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Password"
+                  },
+                  "embed": false
+                },
+                "Rgbcolor": {
+                  "name": "Rgbcolor",
+                  "tags": {
+                    "json": [
+                      "rgbcolor",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "RGBColor"
+                  },
+                  "embed": false
+                },
+                "Ssn": {
+                  "name": "Ssn",
+                  "tags": {
+                    "json": [
+                      "ssn",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "SSN"
+                  },
+                  "embed": false
+                },
+                "Uri": {
+                  "name": "Uri",
+                  "tags": {
+                    "json": [
+                      "uri",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "URI"
+                  },
+                  "embed": false
+                },
+                "Uuid": {
+                  "name": "Uuid",
+                  "tags": {
+                    "json": [
+                      "uuid",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "UUID"
+                  },
+                  "embed": false
+                },
+                "Uuid3": {
+                  "name": "Uuid3",
+                  "tags": {
+                    "json": [
+                      "uuid3",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "UUID3"
+                  },
+                  "embed": false
+                },
+                "Uuid4": {
+                  "name": "Uuid4",
+                  "tags": {
+                    "json": [
+                      "uuid4",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "UUID4"
+                  },
+                  "embed": false
+                },
+                "Uuid5": {
+                  "name": "Uuid5",
+                  "tags": {
+                    "json": [
+                      "uuid5",
+                      "omitempty"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "UUID5"
+                  },
+                  "embed": false
+                }
+              }
+            }
+          },
+          "interface": {},
+          "import": {
+            "assert": {
+              "name": "assert",
+              "fullname": "github.com/stretchr/testify/assert",
+              "needparse": false
+            },
+            "mapstructure": {
+              "name": "mapstructure",
+              "fullname": "github.com/mitchellh/mapstructure",
+              "needparse": false
+            },
+            "strings": {
+              "name": "strings",
+              "fullname": "strings",
+              "needparse": false
+            },
+            "testing": {
+              "name": "testing",
+              "fullname": "testing",
+              "needparse": false
+            },
+            "time": {
+              "name": "time",
+              "fullname": "time",
+              "needparse": false
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/time.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/time.go",
+          "alias": {
+            "DateTime": {
+              "name": "DateTime",
+              "original": {
+                "kind": "selector",
+                "prefix": "time",
+                "value": "Time"
+              },
+              "candidates": null
+            }
+          },
+          "struct": {},
+          "interface": {},
+          "import": {
+            "driver": {
+              "name": "driver",
+              "fullname": "database/sql/driver",
+              "needparse": false
+            },
+            "fmt": {
+              "name": "fmt",
+              "fullname": "fmt",
+              "needparse": false
+            },
+            "jlexer": {
+              "name": "jlexer",
+              "fullname": "github.com/mailru/easyjson/jlexer",
+              "needparse": false
+            },
+            "jwriter": {
+              "name": "jwriter",
+              "fullname": "github.com/mailru/easyjson/jwriter",
+              "needparse": false
+            },
+            "regexp": {
+              "name": "regexp",
+              "fullname": "regexp",
+              "needparse": false
+            },
+            "strings": {
+              "name": "strings",
+              "fullname": "strings",
+              "needparse": false
+            },
+            "time": {
+              "name": "time",
+              "fullname": "time",
+              "needparse": true
+            }
+          }
+        },
+        "GOPATH://src/github.com/go-openapi/strfmt/time_test.go": {
+          "name": "GOPATH://src/github.com/go-openapi/strfmt/time_test.go",
+          "alias": {},
+          "struct": {},
+          "interface": {},
+          "import": {
+            "assert": {
+              "name": "assert",
+              "fullname": "github.com/stretchr/testify/assert",
+              "needparse": false
+            },
+            "bytes": {
+              "name": "bytes",
+              "fullname": "bytes",
+              "needparse": false
+            },
+            "testing": {
+              "name": "testing",
+              "fullname": "testing",
+              "needparse": false
+            },
+            "time": {
+              "name": "time",
+              "fullname": "time",
+              "needparse": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
