@@ -25,6 +25,9 @@ class Reader(object):
         if "interface" in data:
             for name, interface in data["interface"].items():
                 file.read_interface(name, interface)
+        if "function" in data:
+            for name, function in data["function"].items():
+                file.read_function(name, function)
         return file
 
     def read_struct(self, data, parent=None):
@@ -32,6 +35,14 @@ class Reader(object):
         for name, field in data["fields"].items():
             struct.read_field(name, field)
         return struct
+
+    def read_function(self, data, parent=None):
+        function = structure.Function(data["name"], parent=parent, reader=self)
+        for p in data["params"]:
+            function.add_argument(p, p["name"])
+        for p in data["returns"]:
+            function.add_return_value(p, p["name"])
+        return function
 
     def read_interface(self, data, parent=None):
         interface = structure.Interface(data["name"], data, parent=parent, reader=self)

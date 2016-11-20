@@ -104,6 +104,7 @@ class File(object):
         self.aliases = OrderedDict()
         self.structs = OrderedDict()
         self.interfaces = OrderedDict()
+        self.functions = OrderedDict()
         self.members = {}
 
     @property
@@ -130,6 +131,13 @@ class File(object):
 
     def read_interface(self, name, interface):
         self.members[name] = self.interfaces[name] = self.reader.read_interface(interface, parent=self)
+
+    def read_function(self, name, function):
+        self.members[name] = self.functions[name] = self.reader.read_function(function, parent=self)
+
+    def add_function(self, name, function):
+        self.members[name] = self.functions[name] = function
+        function.parent = self
 
     def dump(self, writer):
         return writer.write_file(self)
@@ -456,9 +464,10 @@ class PseudoField(Field):
 
 
 class Function(object):
-    def __init__(self, name, parent, body=None):
+    def __init__(self, name, parent, body=None, reader=None):
         self.name = name
         self.parent = parent
+        self.reader = reader
         self.args = Parameters(parent=self, tmp_prefix="v")
         self.returns = Parameters(parent=self, tmp_prefix="r")
         self.body = body or []
@@ -471,7 +480,7 @@ class Function(object):
     def add_argument(self, definition, name):
         self.args.add(definition, name)
 
-    def add_returns(self, definition, name=""):
+    def add_return_value(self, definition, name=""):
         self.returns.add(definition, name)
 
     def body_function(self, fn):
@@ -525,8 +534,10 @@ class Parameter(object):
     def type_expr(self):
         if isinstance(self.definition, (str, bytes)):
             return self.definition
-        else:
+        elif hasattr(self.definition, "type_path"):
             return get_type_expr(self.definition.type_path, self)
+        else:  # maybe dict
+            return get_type_expr(get_type_path(self.definition["type"], self), self)
 
     def __str__(self):
         if self.name:

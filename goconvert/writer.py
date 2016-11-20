@@ -19,6 +19,8 @@ class Writer(object):
                 self.write_struct(struct, m=m, iw=iw)
             for alias in file.aliases.values():
                 self.write_alias(alias, m=m, iw=iw)
+            for function in file.functions.values():
+                self.write_function(function, m=m, iw=iw)
         return m
 
     def write_packagename(self, file, m=None, iw=None):

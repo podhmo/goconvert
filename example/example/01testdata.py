@@ -10,10 +10,9 @@ from prestring.go import GoModule
 from goconvert.langhelpers import titlize
 
 
-def build_create_empty_struct_func(struct, parent):
-    name = "Empty{}".format(titlize(struct.name))
+def build_create_empty_func(name, struct, parent):
     func = goconvert.Function(name, parent=parent)
-    func.add_returns(struct)
+    func.add_return_value(struct)
 
     # TODO: import struct
     struct_type = goconvert.Parameter("", struct, parent=func)
@@ -34,21 +33,19 @@ def build_create_empty_struct_func(struct, parent):
     return func
 
 
-def build_create_struct_func(struct, parent):
-    creates_empty_name = "Empty{}".format(titlize(struct.name))
-    name = titlize(struct.name)
+def build_create_with_modify_func(name, struct, create_empty_func, parent):
     func = goconvert.Function(name, parent=parent)
 
     pointer_type = goconvert.Parameter("", struct.pointer, parent=func)
     func.add_argument("func(value {})".format(pointer_type.type_expr), "modify")
-    func.add_returns(struct.pointer)
+    func.add_return_value(struct.pointer)
 
     @func.body_function
     def write(m, iw):
         iw.import_(struct.module)
         m.comment("{fnname} : creates {structname} with modify function".format(fnname=name, structname=struct.name))
         with m.func(func.name, func.args, return_=func.returns):
-            m.stmt("value := {fnname}()".format(fnname=creates_empty_name))
+            m.stmt("value := {fnname}()".format(fnname=create_empty_func.name))
             m.stmt("modify(&value)")
             m.return_("&value")
     return func
@@ -63,16 +60,17 @@ def run(src_file, package_name, src_package):
     m = GoModule()
     writer = Writer(m)
 
-    m.package(package_name)
-
     module = goconvert.Module(package_name, package_name, parent=world)
     new_file = goconvert.File("{}.go".format(package_name), {}, parent=module)
-    with writer.with_import(m) as iw:
-        for file in world.modules[src_package].files.values():
-            for struct in file.structs.values():
-                build_create_empty_struct_func(struct, parent=new_file).dump(writer, iw=iw)
-                build_create_struct_func(struct, parent=new_file).dump(writer, iw=iw)
-    print(m)
+    for file in world.modules[src_package].files.values():
+        for struct in file.structs.values():
+            name = "Empty{}".format(titlize(struct.name))
+            create_empty_func = build_create_empty_func(name, struct, parent=new_file)
+            new_file.add_function(name, create_empty_func)
+            name = titlize(struct.name)
+            create_with_modify_func = build_create_with_modify_func(name, struct, create_empty_func, parent=new_file)
+            new_file.add_function(name, create_with_modify_func)
+    print(new_file.dump(writer))
 
 
 def main():
@@ -85,4 +83,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # run("../json/src.json")
+    # run("../json/src.json", "testdata", "src")
