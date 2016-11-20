@@ -9,5 +9,8 @@ from goconvert.structure import (  # NOQA
     Function,
     Parameter,
 )
+from goconvert.writer import (  # NOQA
+    WriterDispatcher,
+    Writer,
+)
 from goconvert.reader import Reader  # NOQA
-from goconvert.writer import Writer  # NOQA

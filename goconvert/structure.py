@@ -59,9 +59,6 @@ class Module(object):
     def package_name(self):
         return self.name
 
-    def fulladdress(self, name):
-        return "{}.{}".format(self.fullname, name)
-
     def merge(self, same):
         self.files.update(same.files)
         self.members.update(same.members)
@@ -199,7 +196,7 @@ class Alias(object):
 
     @reify
     def fullname(self):
-        return self.module.fulladdress(self.data["name"])
+        return get_fulladdress(self.data["name"], self.module)
 
     def dump(self, writer):
         return writer.write_alias(self)
@@ -258,7 +255,7 @@ class Struct(object):
 
     @property
     def fullname(self):
-        return self.module.fulladdress(self.name)
+        return get_fulladdress(self.name, self.module)
 
     @reify
     def type_path(self):
@@ -312,7 +309,7 @@ class Interface(object):
 
     @property
     def fullname(self):
-        return self.module.fulladdress(self.name)
+        return get_fulladdress(self.name, self.module)
 
     @reify
     def type_path(self):
@@ -389,6 +386,10 @@ def find_module(name, container):
     else:
         fullname = file.imports[name]["fullname"]
     return module.parent.modules_by_fullname[fullname]
+
+
+def get_fulladdress(name, module):
+    return "{}.{}".format(module.fullname, name)
 
 
 class Field(object):

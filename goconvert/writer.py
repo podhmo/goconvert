@@ -3,7 +3,6 @@ import contextlib
 from prestring.go import GoModule
 
 
-# todo: fix. (this is broken
 class Writer(object):
     prestring_module = GoModule
 
@@ -13,7 +12,11 @@ class Writer(object):
     def write_file(self, file, m=None, iw=None):
         print("-- write: {} --".format(file.name), file=sys.stderr)
         m = m or self.m
-        self.write_packagename(file, m=m)
+
+        package_name = file.package_name
+        if package_name is not None:
+            m.package(package_name)
+
         with self.with_import(m, iw) as iw:
             for struct in file.structs.values():
                 self.write_struct(struct, m=m, iw=iw)
@@ -21,13 +24,6 @@ class Writer(object):
                 self.write_alias(alias, m=m, iw=iw)
             for function in file.functions.values():
                 self.write_function(function, m=m, iw=iw)
-        return m
-
-    def write_packagename(self, file, m=None, iw=None):
-        m = m or self.m
-        package_name = file.package_name
-        if package_name is not None:
-            m.package(package_name)
         return m
 
     def write_struct(self, struct, m=None, iw=None):
@@ -96,6 +92,19 @@ class Writer(object):
         yield iw
         if not iw.used:
             import_part.body.body.clear()
+
+
+class WriterDispatcher(object):
+    def __init__(self):
+        self.writers = {}
+
+    def dispatch(self, file):
+        if file.name not in self.writers:
+            self.writers[file.name] = self.create_writer(file)
+        return self.writers[file.name]
+
+    def create_writer(self, file):
+        return Writer(GoModule())
 
 
 class ImportWriter(object):
