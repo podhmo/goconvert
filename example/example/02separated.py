@@ -12,7 +12,6 @@ def build_create_empty_func(name, struct, new_file):
     func = goconvert.Function(name, parent=new_file)
     func.add_return_value(struct)
 
-    # TODO: import struct
     struct_type = goconvert.Parameter("", struct, parent=func)
 
     @func.write_function
