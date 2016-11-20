@@ -36,10 +36,10 @@ class Writer(object):
         with m.type_(struct.name, "struct"):
             for field in struct.fields.values():
                 field_definition = field.definition
-                if hasattr(field_definition, "original_definition"):
-                    field_definition = field_definition.original_definition
-                if hasattr(field_definition, "module"):
+
+                if hasattr(field_definition, "module") and struct.module != field_definition.module:
                     iw.import_(field_definition.module)
+
                 self.write_comment(field.data, m=m, iw=iw)
                 if field.data["embed"]:
                     m.stmt(field.type_expr)
@@ -47,12 +47,17 @@ class Writer(object):
                     m.stmt("{} {}".format(field.name, field.type_expr))
                 if field.tags:
                     tags = " ".join(['{}:"{}"'.format(tag, ",".join(args)) for tag, args in field.tags.items()])
-                    m.insert_after("  {}".format(tags))
+                    m.insert_after("  `{}`".format(tags))
         return m
 
     def write_alias(self, alias, m=None, iw=None):
         m = m or self.m
         m.type_alias(alias.name, alias.type_expr)
+        if hasattr(alias, "original_definition"):
+            original_definition = alias.original_definition
+            if hasattr(original_definition, "module"):
+                iw.import_(alias.original_definition.module)
+
         if alias.candidates:
             with m.const_group() as const:
                 for c in alias.candidates:

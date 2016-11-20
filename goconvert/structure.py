@@ -483,7 +483,7 @@ class Function(object):
     def add_return_value(self, definition, name=""):
         self.returns.add(definition, name)
 
-    def body_function(self, fn):
+    def write_function(self, fn):
         self.body_fn = fn
         return fn
 
