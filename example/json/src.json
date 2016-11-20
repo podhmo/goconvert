@@ -3708,7 +3708,7 @@
     },
     "src": {
       "name": "src",
-      "fullname": "vert/example/src",
+      "fullname": "github.com/podhmo/hmm/src",
       "file": {
         "../src/skill.go": {
           "name": "../src/skill.go",

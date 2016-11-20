@@ -13,8 +13,8 @@ class SeparatedOutput(object):
         self.dispatcher = WriterDispatcher()
         self.prepared = False
 
-    def new_file(self, file):
-        fname = "{}{}".format(self.gen_prefix, os.path.basename(file.name))
+    def new_file(self, file_name):
+        fname = "{}{}".format(self.gen_prefix, os.path.basename(file_name))
         return File(fname, {}, parent=self.module)
 
     def prepare(self):

@@ -5,21 +5,6 @@ import (
 	bson "gopkg.in/mgo.v2/bson"
 )
 
-// EmptySkill : creates empty Skill
-func EmptySkill() src.Skill {
-	value := src.Skill {
-		ID: bson.NewObjectId(),
-	}
-	return value
-}
-
-// Skill : creates Skill with modify function
-func Skill(modify func(value *src.Skill)) *src.Skill {
-	value := EmptySkill()
-	modify(&value)
-	return &value
-}
-
 // EmptyFacebookAuth : creates empty FacebookAuth
 func EmptyFacebookAuth() src.FacebookAuth {
 	value := src.FacebookAuth {
@@ -80,21 +65,6 @@ func EmptyTwitterAuth() src.TwitterAuth {
 // TwitterAuth : creates TwitterAuth with modify function
 func TwitterAuth(modify func(value *src.TwitterAuth)) *src.TwitterAuth {
 	value := EmptyTwitterAuth()
-	modify(&value)
-	return &value
-}
-
-// EmptyUser : creates empty User
-func EmptyUser() src.User {
-	value := src.User {
-		ID: bson.NewObjectId(),
-	}
-	return value
-}
-
-// User : creates User with modify function
-func User(modify func(value *src.User)) *src.User {
-	value := EmptyUser()
 	modify(&value)
 	return &value
 }
