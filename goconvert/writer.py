@@ -62,6 +62,13 @@ class Writer(object):
 
     def write_function(self, fn, m=None, iw=None):
         m = m or self.m
+        if iw:
+            for p in fn.args:
+                if hasattr(p.definition, "fullname"):
+                    iw.import_(p.definition.module)
+            for p in fn.returns:
+                if hasattr(p.definition, "fullname"):
+                    iw.import_(p.definition.module)
         if fn.body_fn:
             return fn.body_fn(m, iw) or m
         else:

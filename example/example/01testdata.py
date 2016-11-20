@@ -19,7 +19,6 @@ def build_create_empty_func(name, struct, parent):
 
     @func.body_function
     def write(m, iw):
-        iw.import_(struct.module)
         m.comment("{fnname} : creates empty {structname}".format(fnname=name, structname=struct.name))
         with m.func(func.name, func.args, return_=func.returns):
             with m.block("value := {name}".format(name=struct_type.type_expr)):
@@ -42,7 +41,6 @@ def build_create_with_modify_func(name, struct, create_empty_func, parent):
 
     @func.body_function
     def write(m, iw):
-        iw.import_(struct.module)
         m.comment("{fnname} : creates {structname} with modify function".format(fnname=name, structname=struct.name))
         with m.func(func.name, func.args, return_=func.returns):
             m.stmt("value := {fnname}()".format(fnname=create_empty_func.name))

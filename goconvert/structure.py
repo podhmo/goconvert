@@ -499,7 +499,7 @@ class Parameters(object):
         self.tmp_prefix = tmp_prefix
 
     def __iter__(self):
-        return self.args_dict.values()
+        return iter(self.args_dict.values())
 
     @property
     def module(self):
