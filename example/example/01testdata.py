@@ -10,14 +10,14 @@ from prestring.go import GoModule
 from goconvert.langhelpers import titlize
 
 
-def build_create_empty_func(name, struct, parent):
-    func = goconvert.Function(name, parent=parent)
+def build_create_empty_func(name, struct, new_file):
+    func = goconvert.Function(name, parent=new_file)
     func.add_return_value(struct)
 
     # TODO: import struct
     struct_type = goconvert.Parameter("", struct, parent=func)
 
-    @func.body_function
+    @func.write_function
     def write(m, iw):
         m.comment("{fnname} : creates empty {structname}".format(fnname=name, structname=struct.name))
         with m.func(func.name, func.args, return_=func.returns):
@@ -32,14 +32,14 @@ def build_create_empty_func(name, struct, parent):
     return func
 
 
-def build_create_with_modify_func(name, struct, create_empty_func, parent):
-    func = goconvert.Function(name, parent=parent)
+def build_create_with_modify_func(name, struct, create_empty_func, new_file):
+    func = goconvert.Function(name, parent=new_file)
 
     pointer_type = goconvert.Parameter("", struct.pointer, parent=func)
     func.add_argument("func(value {})".format(pointer_type.type_expr), "modify")
     func.add_return_value(struct.pointer)
 
-    @func.body_function
+    @func.write_function
     def write(m, iw):
         m.comment("{fnname} : creates {structname} with modify function".format(fnname=name, structname=struct.name))
         with m.func(func.name, func.args, return_=func.returns):
@@ -63,10 +63,10 @@ def run(src_file, package_name, src_package):
     for file in world.modules[src_package].files.values():
         for struct in file.structs.values():
             name = "Empty{}".format(titlize(struct.name))
-            create_empty_func = build_create_empty_func(name, struct, parent=new_file)
+            create_empty_func = build_create_empty_func(name, struct, new_file=new_file)
             new_file.add_function(name, create_empty_func)
             name = titlize(struct.name)
-            create_with_modify_func = build_create_with_modify_func(name, struct, create_empty_func, parent=new_file)
+            create_with_modify_func = build_create_with_modify_func(name, struct, create_empty_func, new_file)
             new_file.add_function(name, create_with_modify_func)
     print(new_file.dump(writer))
 
