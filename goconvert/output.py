@@ -6,10 +6,10 @@ from .writer import WriterDispatcher
 
 
 class SeparatedOutput(object):
-    def __init__(self, dirname, fullname=None, parent=None, gen_prefix="autogen_"):
+    def __init__(self, dirname, package_name=None, parent=None, gen_prefix="autogen_"):
         self.dirname = dirname
         self.gen_prefix = gen_prefix
-        self.module = Module(os.path.basename(dirname), fullname, parent=parent)
+        self.module = Module(package_name, "::{}".format(package_name), parent=parent)
         self.dispatcher = WriterDispatcher()
         self.prepared = False
 
