@@ -5,10 +5,17 @@ from .langhelpers import titlize
 from .langhelpers import reify
 
 
+def repr_structure(self):
+    fmt = "<{self.__class__.__name__} name={self.name!r} at {id}>"
+    return fmt.format(self=self, id=hex(id(self)))
+
+
 class Universe(object):
-    def __init__(self, worlds=None, modules=None):
+    def __init__(self, worlds=None, modules=None, reader=None):
         self.worlds = worlds or OrderedDict()
         self.modules = modules or ChainMap()
+        self.reader = reader
+        self.nameless = World(self, reader=self.reader)
 
     def __getitem__(self, name):
         return self.worlds[name]
@@ -20,23 +27,36 @@ class Universe(object):
     def find_module(self, fullname):
         return self.modules[fullname]
 
+    def create_module(self, name, fullname):
+        data = {"name": name, "fullname": fullname, "file": {}}
+        return self.nameless.read_module(name, data)
+
 
 class World(object):
     def __init__(self, parent=None, reader=None):
         self.parent = parent
         self.reader = reader
         self.modules = OrderedDict()
-        self.modules_by_fullname = {}
+
+    # TODO: remove it.
+    @property
+    def modules_by_fullname(self):
+        return self.universe.modules
+
+    @property
+    def universe(self):
+        return self.parent
 
     def read_module(self, name, module):
         module = self.reader.read_module(module, parent=self)
         fullname = module.fullname
         if fullname in self.modules_by_fullname:
             self.modules_by_fullname[fullname].merge(module)
-            self.modules[name] = self.modules_by_fullname[fullname]
+            result = self.modules[name] = self.modules_by_fullname[fullname]
         else:
             self.modules[name] = module
-            self.modules_by_fullname[fullname] = self.modules[name]
+            result = self.modules_by_fullname[fullname] = self.modules[name]
+        return result
 
     def normalize(self):
         for module in self.modules.values():
@@ -55,6 +75,8 @@ class Module(object):
         self.files = OrderedDict()
         self.reset()
 
+    __repr__ = repr_structure
+
     @property
     def package_name(self):
         return self.name
@@ -64,7 +86,8 @@ class Module(object):
         self.members.update(same.members)
 
     def read_file(self, name, file):
-        self.files[name] = self.reader.read_file(file, parent=self)
+        result = self.files[name] = self.reader.read_file(file, parent=self)
+        return result
 
     def normalize(self):
         self.reset()
@@ -104,6 +127,8 @@ class File(object):
         self.functions = OrderedDict()
         self.members = {}
 
+    __repr__ = repr_structure
+
     @property
     def package_name(self):
         if self.parent is None:
@@ -121,16 +146,20 @@ class File(object):
             alias.normalize()
 
     def read_alias(self, name, alias):
-        self.members[name] = self.aliases[name] = self.reader.read_alias(alias, parent=self)
+        result = self.members[name] = self.aliases[name] = self.reader.read_alias(alias, parent=self)
+        return result
 
     def read_struct(self, name, struct):
-        self.members[name] = self.structs[name] = self.reader.read_struct(struct, parent=self)
+        result = self.members[name] = self.structs[name] = self.reader.read_struct(struct, parent=self)
+        return result
 
     def read_interface(self, name, interface):
-        self.members[name] = self.interfaces[name] = self.reader.read_interface(interface, parent=self)
+        result = self.members[name] = self.interfaces[name] = self.reader.read_interface(interface, parent=self)
+        return result
 
     def read_function(self, name, function):
-        self.members[name] = self.functions[name] = self.reader.read_function(function, parent=self)
+        result = self.members[name] = self.functions[name] = self.reader.read_function(function, parent=self)
+        return result
 
     def add_function(self, name, function):
         self.members[name] = self.functions[name] = function
@@ -153,8 +182,7 @@ class Type(object):
         self.name = name
         self.fullname = fullname or name
 
-    def __repr__(self):
-        return "<Type {!r}>".format(self.name)
+    __repr__ = repr_structure
 
 
 class Alias(object):
@@ -163,6 +191,8 @@ class Alias(object):
         self.parent = parent
         self.reader = reader
         self.data = data
+
+    __repr__ = repr_structure
 
     @reify
     def candidates(self):
@@ -243,6 +273,8 @@ class Struct(object):
         self.data = data
         self.fields = OrderedDict()
 
+    __repr__ = repr_structure
+
     @reify
     def pointer(self):
         return Pointer(self)
@@ -268,6 +300,7 @@ class Struct(object):
     def read_field(self, name, field):
         field = self.reader.read_field(field, self)
         self.fields[name.lower()] = field
+        return field
 
     def dump(self, writer):
         return writer.write_struct(self)
@@ -300,6 +333,8 @@ class Interface(object):
         self.parent = parent
         self.reader = reader
         self.data = data
+
+    __repr__ = repr_structure
 
     @property
     def package_name(self):
@@ -399,6 +434,8 @@ class Field(object):
         self.parent = parent
         self.reader = reader
 
+    __repr__ = repr_structure
+
     @property
     def type(self):
         return self.data["type"]
@@ -474,6 +511,8 @@ class Function(object):
         self.body = body or []
         self.body_fn = None
 
+    __repr__ = repr_structure
+
     @property
     def module(self):
         return self.parent.module
@@ -522,6 +561,8 @@ class Parameter(object):
         self.name = name
         self.definition = definition
         self.parent = parent
+
+    __repr__ = repr_structure
 
     @property
     def module(self):

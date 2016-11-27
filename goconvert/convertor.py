@@ -38,12 +38,12 @@ class CoerceMap(object):
         return self.override_map.get(pair)
 
 
-class ConvertRequest(object):
+class ConvertContext(object):
     def __init__(self, m, iw=None):
         self.m = m
         self.iw = iw
 
-    def new_request(self, m=None):
+    def new_context(self, m=None):
         m = m or self.m
         return self.__class__(m.submodule(newline=False), self.iw)
 
@@ -53,10 +53,10 @@ class ConvertorFromMinicode(object):
         self.coerce_map = coerce_map
         self.gensym = Gensym()
 
-    def coerce(self, request, value, src_type, dst_type):
+    def coerce(self, context, value, src_type, dst_type):
         pair = (src_type, dst_type)
         if pair in self.coerce_map:
-            return self.override_map[pair](self, request, value, src_type, dst_type)
+            return self.override_map[pair](self, context, value, src_type, dst_type)
         if isinstance(dst_type, (list, tuple)):
             r = []
             for x in dst_type:
@@ -69,13 +69,13 @@ class ConvertorFromMinicode(object):
             return "{}({})".format("".join(r), value)
         elif "/" in dst_type:
             prefix, name = dst_type.rsplit(".")
-            if request.iw:
-                new_prefix = request.iw.import_fullname(prefix)  # writing import clause if needed
+            if context.iw:
+                new_prefix = context.iw.import_fullname(prefix)  # writing import clause if needed
             return "{}.{}({})".format(new_prefix, name, value)
         else:
             return "{}({})".format(dst_type, value)
 
-    def code_from_minicode(self, request, code, value):
+    def code_from_minicode(self, context, code, value):
         is_cast = False
         # optimization: x -> y; y -> z => z(x)
         coerce_buf = []
@@ -83,26 +83,26 @@ class ConvertorFromMinicode(object):
         def consume_buf(value):
             if not coerce_buf:
                 return value
-            value = self.coerce(request, value, *coerce_buf[-1])
+            value = self.coerce(context, value, *coerce_buf[-1])
             tmp = self.gensym()
-            request.m.stmt("{} := {}".format(tmp, value))
+            context.m.stmt("{} := {}".format(tmp, value))
             coerce_buf.clear()
             return tmp
 
         for i, op in enumerate(code):
             if is_cast:
                 tmp = self.gensym()
-                request.m.stmt("{} := {}".format(tmp, value))
+                context.m.stmt("{} := {}".format(tmp, value))
                 value = tmp
                 is_cast = False
 
             if op[0] == "deref":
                 value = consume_buf(value)
-                with request.m.if_("{} != nil".format(value)):
+                with context.m.if_("{} != nil".format(value)):
                     value = "*({})".format(value)
                     tmp = self.gensym()
-                    request.m.stmt("{} := {}".format(tmp, value))
-                    return self.code_from_minicode(request.new_request(), code[i + 1:], tmp)
+                    context.m.stmt("{} := {}".format(tmp, value))
+                    return self.code_from_minicode(context.new_context(), code[i + 1:], tmp)
             elif op[0] == "ref":
                 value = consume_buf(value)
                 value = "&({})".format(value)
@@ -113,7 +113,7 @@ class ConvertorFromMinicode(object):
                     coerce_buf.append((op[1], op[2]))
                     continue
                 value = consume_buf(value)
-                value = self.coerce(request, value, op[1], op[2])
+                value = self.coerce(context, value, op[1], op[2])
                 is_cast = True
             # elif op[0] == "iterate":
             #     value = consume_buf(value)
@@ -123,4 +123,4 @@ class ConvertorFromMinicode(object):
             else:
                 value = consume_buf(value)
                 raise NotImplementedError(op[0])
-        return request.m, consume_buf(value)
+        return context.m, consume_buf(value)

@@ -2,10 +2,17 @@ from . import structure
 
 
 class Reader(object):
+    def __init__(self, universe=None):
+        self.universe = universe or structure.Universe(reader=self)
+        assert self.universe.reader
+
     def read_world(self, data, parent=None):
+        parent = parent or self.universe
         world = structure.World(parent=parent, reader=self)
         for name, module in (data.get("module") or []).items():
             world.read_module(name, module)
+        world.normalize()
+        self.universe.add_world("", world)
         return world
 
     def read_module(self, data, parent=None):
