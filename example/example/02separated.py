@@ -50,7 +50,6 @@ def run(src_file, package_name, src_package, dst):
     reader = Reader()
     with open(src_file) as rf:
         world = reader.read_world(json.load(rf, object_pairs_hook=OrderedDict))
-        world.normalize()
 
     output = SeparatedOutput(dst, package_name, parent=world)
     for file in world.modules[src_package].files.values():

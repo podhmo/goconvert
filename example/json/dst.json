@@ -348,7 +348,7 @@
     },
     "dst": {
       "name": "dst",
-      "fullname": "vert/example/dst",
+      "fullname": "github.com/podhmo/hmm/dst",
       "file": {
         "../dst/person.go": {
           "name": "../dst/person.go",
