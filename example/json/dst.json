@@ -361,6 +361,14 @@
                 "value": "Email"
               },
               "candidates": null
+            },
+            "ID": {
+              "name": "ID",
+              "original": {
+                "kind": "primitive",
+                "value": "string"
+              },
+              "candidates": null
             }
           },
           "struct": {
@@ -375,6 +383,18 @@
                     "value": {
                       "kind": "primitive",
                       "value": "Email"
+                    }
+                  },
+                  "embed": false
+                },
+                "ID": {
+                  "name": "ID",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "ID"
                     }
                   },
                   "embed": false
