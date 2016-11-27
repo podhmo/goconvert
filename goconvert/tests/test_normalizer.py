@@ -3,8 +3,8 @@ import unittest
 
 class PreGencodeTests(unittest.TestCase):
     def _getTargetClass(self):
-        from goconvert.minicode import MiniCodeNormalizer
-        return MiniCodeNormalizer
+        from goconvert.minicode import MinicodeNormalizer
+        return MinicodeNormalizer
 
     def _makeOne(self):
         items = [

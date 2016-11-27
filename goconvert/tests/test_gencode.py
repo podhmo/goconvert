@@ -3,8 +3,8 @@ import unittest
 
 class Tests(unittest.TestCase):
     def _getTargetClass(self):
-        from goconvert.minicode import MiniCodeGenerator
-        return MiniCodeGenerator
+        from goconvert.minicode import MinicodeGenerator
+        return MinicodeGenerator
 
     def _makeOne(self, items=None):
         from goconvert.typeresolver import TypeMappingResolver

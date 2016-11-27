@@ -1,14 +1,5 @@
 from .typeresolver import _wrap_value
-
-
-class Gensym(object):
-    def __init__(self, value="tmp"):
-        self.value = value
-        self.i = 0
-
-    def __call__(self):
-        self.i += 1
-        return "{}{}".format(self.value, self.i)
+from .langhelpers import Gensym
 
 
 class CoerceMap(object):
@@ -38,7 +29,7 @@ class CoerceMap(object):
         return self.override_map.get(pair)
 
 
-class ConvertContext(object):
+class Context(object):
     def __init__(self, m, iw=None):
         self.m = m
         self.iw = iw

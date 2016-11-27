@@ -8,7 +8,7 @@ class GencodeMappingNotFound(ValueError):
         self.dst_path = dst
 
 
-class MiniCodeNormalizer(object):
+class MinicodeNormalizer(object):
     def __init__(self, resolver):
         self.resolver = resolver
 
@@ -103,7 +103,7 @@ class MiniCodeNormalizer(object):
         return stack[0]
 
 
-class MiniCodeGenerator(object):
+class MinicodeGenerator(object):
     # generating mini language
     # [deref] -> *x
     # [ref] -> &x
@@ -111,7 +111,7 @@ class MiniCodeGenerator(object):
 
     def __init__(self, resolver):
         self.resolver = resolver
-        self.normalizer = MiniCodeNormalizer(resolver)  # xxx
+        self.normalizer = MinicodeNormalizer(resolver)  # xxx
 
     def gencode(self, src_path, dst_path):
         mapping_path = self.resolver.resolve(src_path, dst_path)

@@ -1,9 +1,11 @@
 from . import structure
+from .langhelpers import Gensym
 
 
 class Reader(object):
     def __init__(self, universe=None):
         self.universe = universe or structure.Universe(reader=self)
+        self.gensym = Gensym("_")
         assert self.universe.reader
 
     def read_world(self, data, parent=None):
@@ -12,7 +14,7 @@ class Reader(object):
         for name, module in (data.get("module") or []).items():
             world.read_module(name, module)
         world.normalize()
-        self.universe.add_world("", world)
+        self.universe.add_world(self.gensym(), world)
         return world
 
     def read_module(self, data, parent=None):

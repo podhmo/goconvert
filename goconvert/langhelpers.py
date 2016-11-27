@@ -20,6 +20,16 @@ class reify(object):
         return val
 
 
+class Gensym(object):
+    def __init__(self, value="tmp"):
+        self.value = value
+        self.i = 0
+
+    def __call__(self):
+        self.i += 1
+        return "{}{}".format(self.value, self.i)
+
+
 def titlize(name):
     if not name:
         return name

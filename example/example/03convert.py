@@ -3,7 +3,6 @@ import argparse
 import json
 from collections import OrderedDict
 from goconvert import Reader, Writer
-from goconvert import structure
 from prestring.go import GoModule  # NOQA
 from goconvert import builders
 
@@ -16,11 +15,11 @@ def run(src_file, dst_file):
             reader.read_world(json.load(rf, object_pairs_hook=OrderedDict))
 
     convert_module = reader.universe.create_module("convert", "github.com/podhmo/hmm/convert")
-    b = builders.ConvertFunctionBuilder(reader.universe, convert_module)
+    strategy = builders.DefaultStrategy(reader.universe)
+    b = builders.ConvertFunctionBuilder(reader.universe, convert_module, strategy)
 
     src = reader.universe.find_module("github.com/podhmo/hmm/src")
     dst = reader.universe.find_module("github.com/podhmo/hmm/dst")
-
     fnname = b.get_functioname(src["User"], dst["User"])
     func = b.build(fnname, src["User"], dst["User"])
     print(func.dump(writer))
