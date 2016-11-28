@@ -8,7 +8,7 @@ class Tests(unittest.TestCase):
 
     def _makeOne(self, items=None):
         from goconvert.typeresolver import TypeMappingResolver
-        return self._getTargetClass()(TypeMappingResolver(items or []))
+        return self._getTargetClass()(TypeMappingResolver(items or []), verify=False)
 
     def test_it(self):
         target = self._makeOne()

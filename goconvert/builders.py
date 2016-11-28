@@ -46,7 +46,7 @@ class ConvertFunctionBuilder(object):
     def resolve_minicode(self, src_field, dst_field, retry=False):
         try:
             return self.gencode.gencode(src_field.type_path, dst_field.type_path)
-        except minicode.GencodeMappingNotFound as e:
+        except minicode.TypeToTypeNotResolved as e:
             if retry:
                 raise
 

@@ -1,11 +1,15 @@
 from .typeresolver import Action
 
 
-class GencodeMappingNotFound(ValueError):
+class TypeToTypeNotResolved(ValueError):
     def __init__(self, msg, src, dst):
         super().__init__(msg)
         self.src_path = src
         self.dst_path = dst
+
+
+class ArrayTypeToArrayTypeNotResolved(TypeToTypeNotResolved):
+    pass
 
 
 class MinicodeNormalizer(object):
@@ -114,9 +118,9 @@ class MinicodeGenerator(object):
         self.normalizer = MinicodeNormalizer(resolver)  # xxx
         self.verify = verify
 
-    def on_missing_mapping(self, src_path, dst_path):
+    def on_missing_mapping(self, src_path, dst_path, exc=TypeToTypeNotResolved):
         msg = "mapping not found {!r} -> {!r}".format(src_path, dst_path)
-        raise GencodeMappingNotFound(msg, src_path, dst_path)
+        raise exc(msg, src_path, dst_path)
 
     def gencode(self, src_path, dst_path):
         mapping_path = self.resolver.resolve(src_path, dst_path)
@@ -126,7 +130,7 @@ class MinicodeGenerator(object):
         code = self._gencode(pre_gencode)
         post_gencode = self.normalizer.post_gencode(code)
         if self.verify:
-            return self.verify_minicode(post_gencode, src_path, dst_path)
+            self.verify_minicode(post_gencode)
         return post_gencode
 
     def _gencode(self, mapping_path):
@@ -162,17 +166,23 @@ class MinicodeGenerator(object):
                     raise ValueError("not implemented: typ={}, path={}".format(typ, action.dst))
         return code
 
-    def verify_minicode(self, minicode, src_path, dst_path):
+    def verify_minicode(self, minicode):
         for action in minicode:
             if action == ('ref', ):
                 continue
             elif action == ('deref', ):
                 continue
-            elif action[0] == 'coerce':
+            elif action.action == 'coerce':
                 if self.resolver.has_relation(action.src, action.dst):
                     continue
                 else:
-                    return self.on_missing_mapping(src_path, dst_path)
+                    return self.on_missing_mapping(action.src, action.dst)
+            elif action.action == 'iterate':
+                self.verify_minicode(action[1:])
+                if action[1].action == "coerce" and action[-1].action == "coerce":
+                    src = ('array', *action[1].src)
+                    dst = ('array', *action[-1].dst)
+                    if not self.resolver.has_relation(src, dst):
+                        return self.on_missing_mapping(action.src, action.dst, exc=ArrayTypeToArrayTypeNotResolved)
             else:
                 raise NotImplementedError(action)
-        return minicode
