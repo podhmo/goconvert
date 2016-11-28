@@ -47,7 +47,7 @@ class ConvertorFromMinicode(object):
     def coerce(self, context, value, src_type, dst_type):
         pair = (src_type, dst_type)
         if pair in self.coerce_map:
-            return self.override_map[pair](self, context, value, src_type, dst_type)
+            return self.coerce_map[pair](context, value)
         if isinstance(dst_type, (list, tuple)):
             r = []
             for x in dst_type:

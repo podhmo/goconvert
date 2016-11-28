@@ -3,6 +3,7 @@ from collections import OrderedDict
 from collections import ChainMap
 from .langhelpers import titlize
 from .langhelpers import reify
+from prestring import LazyFormat, LazyArguments
 
 
 def repr_structure(self):
@@ -26,6 +27,10 @@ class Universe(object):
 
     def find_module(self, fullname):
         return self.modules[fullname]
+
+    def find_definition(self, fullname):
+        module_path, name = fullname.rsplit(".", 1)
+        return self.find_module(module_path)[name]
 
     def create_module(self, name, fullname):
         data = {"name": name, "fullname": fullname, "file": {}}
@@ -529,6 +534,9 @@ class Function(object):
 
     def dump(self, writer, iw=None):
         return writer.write_function(self, iw=iw)
+
+    def __call__(self, *args):
+        return LazyFormat("{fn}({args})", args=LazyArguments(args), fn=self.name)
 
 
 class Parameters(object):
