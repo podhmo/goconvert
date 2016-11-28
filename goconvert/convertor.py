@@ -113,5 +113,5 @@ class ConvertorFromMinicode(object):
             #     is_cast = True
             else:
                 value = consume_buf(value)
-                raise NotImplementedError(op[0])
+                raise NotImplementedError(op)
         return context.m, consume_buf(value)

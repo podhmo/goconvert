@@ -109,18 +109,24 @@ class MinicodeGenerator(object):
     # [ref] -> &x
     # [coerce, x, y] -> finding alias {original: x} and name is y, -> y(x)
 
-    def __init__(self, resolver):
+    def __init__(self, resolver, verify=True):
         self.resolver = resolver
         self.normalizer = MinicodeNormalizer(resolver)  # xxx
+        self.verify = verify
+
+    def on_missing_mapping(self, src_path, dst_path):
+        msg = "mapping not found {!r} -> {!r}".format(src_path, dst_path)
+        raise GencodeMappingNotFound(msg, src_path, dst_path)
 
     def gencode(self, src_path, dst_path):
         mapping_path = self.resolver.resolve(src_path, dst_path)
         if mapping_path is None:
-            msg = "mapping not found {!r} -> {!r}".format(src_path, dst_path)
-            raise GencodeMappingNotFound(msg, src_path, dst_path)
+            return self.on_missing_mapping(src_path, dst_path)
         pre_gencode = self.normalizer.pre_gencode(mapping_path)
         code = self._gencode(pre_gencode)
         post_gencode = self.normalizer.post_gencode(code)
+        if self.verify:
+            return self.verify_minicode(post_gencode, src_path, dst_path)
         return post_gencode
 
     def _gencode(self, mapping_path):
@@ -155,3 +161,18 @@ class MinicodeGenerator(object):
                 else:
                     raise ValueError("not implemented: typ={}, path={}".format(typ, action.dst))
         return code
+
+    def verify_minicode(self, minicode, src_path, dst_path):
+        for action in minicode:
+            if action == ('ref', ):
+                continue
+            elif action == ('deref', ):
+                continue
+            elif action[0] == 'coerce':
+                if self.resolver.has_relation(action.src, action.dst):
+                    continue
+                else:
+                    return self.on_missing_mapping(src_path, dst_path)
+            else:
+                raise NotImplementedError(action)
+        return minicode
