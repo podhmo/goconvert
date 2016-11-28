@@ -50,9 +50,9 @@ class ConvertFunctionBuilder(object):
 
         dst_struct_type = Parameter("", dst_struct, parent=func)
         code_list = []
-        for name, src_field in src_struct.fields.items():
-            if name in dst_struct:
-                dst_field = dst_struct.fields[name]
+        for name, dst_field in dst_struct.fields.items():
+            if name in src_struct:
+                src_field = src_struct.fields[name]
                 minicode = self.gencode.gencode(src_field.type_path, dst_field.type_path)
                 code_list.append((src_field, dst_field, minicode))
 
