@@ -17,4 +17,10 @@ type User struct {
 	TwitterAuthID  *bson.ObjectId `bson:"twitterAuthId,omitempty" json:"twitterAuthId,omitempty"`
 	FacebookAuthID *bson.ObjectId `bson:"facebookAuthId,omitempty" json:"facebookAuthId,omitempty"`
 	GithubAuthID   *bson.ObjectId `bson:"githubAuthId,omitempty" json:"githubAuthId,omitempty"`
+	Address        *Address       `json:"address"`
+}
+
+// Address :
+type Address struct {
+	Address string
 }

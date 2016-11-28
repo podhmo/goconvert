@@ -5,10 +5,23 @@ import (
 	bson "gopkg.in/mgo.v2/bson"
 )
 
-// EmptyUser : creates empty User
+// EmptyAddress : returns empty Address
+func EmptyAddress() src.Address {
+	value := src.Address{}
+	return value
+}
+
+// Address : creates Address with modify function
+func Address(modify func(value *src.Address)) *src.Address {
+	value := EmptyAddress()
+	modify(&value)
+	return &value
+}
+
+// EmptyUser : returns empty User
 func EmptyUser() src.User {
-	value := src.User {
-		ID: bson.NewObjectId(),
+	value := src.User{
+		Id: bson.NewObjectId(),
 	}
 	return value
 }

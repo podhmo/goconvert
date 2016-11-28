@@ -350,8 +350,8 @@
       "name": "dst",
       "fullname": "github.com/podhmo/hmm/dst",
       "file": {
-        "../dst/person.go": {
-          "name": "../dst/person.go",
+        "../dst/user.go": {
+          "name": "../dst/user.go",
           "alias": {
             "Email": {
               "name": "Email",
@@ -372,9 +372,38 @@
             }
           },
           "struct": {
+            "Address": {
+              "name": "Address",
+              "fields": {
+                "Address": {
+                  "name": "Address",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "string"
+                    }
+                  },
+                  "embed": false
+                }
+              }
+            },
             "User": {
               "name": "User",
               "fields": {
+                "Address": {
+                  "name": "Address",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "Address"
+                    }
+                  },
+                  "embed": false
+                },
                 "Email": {
                   "name": "Email",
                   "tags": {},
@@ -383,6 +412,42 @@
                     "value": {
                       "kind": "primitive",
                       "value": "Email"
+                    }
+                  },
+                  "embed": false
+                },
+                "FacebookAuthID": {
+                  "name": "FacebookAuthID",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "ID"
+                    }
+                  },
+                  "embed": false
+                },
+                "GithubAuthID": {
+                  "name": "GithubAuthID",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "ID"
+                    }
+                  },
+                  "embed": false
+                },
+                "GoogleAuthID": {
+                  "name": "GoogleAuthID",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "ID"
                     }
                   },
                   "embed": false
@@ -407,6 +472,18 @@
                     "value": {
                       "kind": "primitive",
                       "value": "string"
+                    }
+                  },
+                  "embed": false
+                },
+                "TwitterAuthID": {
+                  "name": "TwitterAuthID",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "ID"
                     }
                   },
                   "embed": false

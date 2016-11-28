@@ -4174,9 +4174,39 @@
             }
           },
           "struct": {
+            "Address": {
+              "name": "Address",
+              "fields": {
+                "Address": {
+                  "name": "Address",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "string"
+                  },
+                  "embed": false
+                }
+              }
+            },
             "User": {
               "name": "User",
               "fields": {
+                "Address": {
+                  "name": "Address",
+                  "tags": {
+                    "json": [
+                      "address"
+                    ]
+                  },
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "Address"
+                    }
+                  },
+                  "embed": false
+                },
                 "Email": {
                   "name": "Email",
                   "tags": {

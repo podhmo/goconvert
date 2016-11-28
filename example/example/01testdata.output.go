@@ -84,10 +84,25 @@ func TwitterAuth(modify func(value *src.TwitterAuth)) *src.TwitterAuth {
 	return &value
 }
 
+// EmptyAddress : creates empty Address
+func EmptyAddress() src.Address {
+	value := src.Address {
+
+	}
+	return value
+}
+
+// Address : creates Address with modify function
+func Address(modify func(value *src.Address)) *src.Address {
+	value := EmptyAddress()
+	modify(&value)
+	return &value
+}
+
 // EmptyUser : creates empty User
 func EmptyUser() src.User {
 	value := src.User {
-		ID: bson.NewObjectId(),
+		Id: bson.NewObjectId(),
 	}
 	return value
 }

@@ -5,9 +5,9 @@ import (
 	bson "gopkg.in/mgo.v2/bson"
 )
 
-// EmptySkill : creates empty Skill
+// EmptySkill : returns empty Skill
 func EmptySkill() src.Skill {
-	value := src.Skill {
+	value := src.Skill{
 		ID: bson.NewObjectId(),
 	}
 	return value

@@ -22,7 +22,7 @@ def run(src_file, dst_file):
     dst = reader.universe.find_module("github.com/podhmo/hmm/dst")
     fnname = b.get_functioname(src["User"], dst["User"])
     func = b.build(fnname, src["User"], dst["User"])
-    print(func.dump(writer))
+    print(func.parent.dump(writer))
 
 
 def main():
@@ -33,5 +33,5 @@ def main():
     return run(args.src, args.dst)
 
 if __name__ == "__main__":
-    # main()
-    run("../json/src.json", "../json/dst.json")
+    main()
+    # run("../json/src.json", "../json/dst.json")

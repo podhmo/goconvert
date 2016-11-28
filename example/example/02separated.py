@@ -38,9 +38,9 @@ def build_create_with_modify_func(name, struct, create_empty_func, new_file):
 
     @func.write_function
     def write(m, iw):
-        m.comment("{fnname} : returns {structname} using modifier".format(fnname=name, structname=struct.name))
+        m.comment("{fnname} : creates {structname} with modify function".format(fnname=name, structname=struct.name))
         with m.func(func.name, func.args, return_=func.returns):
-            m.stmt("value := {fnname}()".format(fnname=create_empty_func.name))
+            m.stmt("value := {}".format(create_empty_func()))
             m.stmt("modify(&value)")
             m.return_("&value")
     return func
