@@ -11,14 +11,14 @@ class Tests(unittest.TestCase):
         from goconvert.convertor import CoerceMap
         return self._getTargetClass()(CoerceMap(TypeMappingResolver(items)))
 
-    def _makeRequest(self):
-        from goconvert.convertor import ConvertRequest
+    def _makeContext(self):
+        from goconvert.convertor import Context
         from prestring.go import GoModule
-        return ConvertRequest(GoModule())
+        return Context(GoModule())
 
     def test_convert_ref(self):
         target = self._makeOne([])
-        request = self._makeRequest()
+        request = self._makeContext()
         value = "v"
         code = [("ref",)]
         _, value = target.code_from_minicode(request, code, value)
@@ -27,7 +27,7 @@ class Tests(unittest.TestCase):
 
     def test_convert_deref(self):
         target = self._makeOne([])
-        request = self._makeRequest()
+        request = self._makeContext()
         value = "v"
         code = [("deref",)]
         _, value = target.code_from_minicode(request, code, value)
@@ -42,7 +42,7 @@ if v != nil  {
     def test_convert_coerce(self):
         from goconvert.typeresolver import Action
         target = self._makeOne([("string", "X")])
-        request = self._makeRequest()
+        request = self._makeContext()
         value = "v"
         code = [Action(action="coerce", src=("string",), dst=("X", ))]
         _, value = target.code_from_minicode(request, code, value)
@@ -52,7 +52,7 @@ if v != nil  {
     def test_convert_coerce_ref(self):
         from goconvert.typeresolver import Action
         target = self._makeOne([("string", "X")])
-        request = self._makeRequest()
+        request = self._makeContext()
         value = "v"
         code = [("ref",), Action(action="coerce", src=("string",), dst=("X", ))]
         _, value = target.code_from_minicode(request, code, value)
@@ -67,7 +67,7 @@ tmp2 := X(tmp1)\
     def test_convert_deref_coerce(self):
         from goconvert.typeresolver import Action
         target = self._makeOne([("string", "X")])
-        request = self._makeRequest()
+        request = self._makeContext()
         value = "v"
         code = [("deref",), Action(action="coerce", src=("string",), dst=("X", ))]
         _, value = target.code_from_minicode(request, code, value)
