@@ -1,0 +1,114 @@
+{
+  "module": {
+    "convert": {
+      "name": "convert",
+      "fullname": "github.com/podhmo/hmm/example/03convert_output",
+      "file": {
+        "../example/03convert_output/convert.go": {
+          "name": "../example/03convert_output/convert.go",
+          "funcs": {
+            "AddressToAddress": {
+              "name": "AddressToAddress",
+              "params": [
+                {
+                  "name": "src",
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "selector",
+                      "prefix": "src",
+                      "value": "Address"
+                    }
+                  }
+                }
+              ],
+              "returns": [
+                {
+                  "name": "",
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "selector",
+                      "prefix": "dst",
+                      "value": "Address"
+                    }
+                  }
+                }
+              ]
+            },
+            "UserToUser": {
+              "name": "UserToUser",
+              "params": [
+                {
+                  "name": "src",
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "selector",
+                      "prefix": "src",
+                      "value": "User"
+                    }
+                  }
+                }
+              ],
+              "returns": [
+                {
+                  "name": "",
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "selector",
+                      "prefix": "dst",
+                      "value": "User"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "../example/03convert_output/primitive.go": {
+          "name": "../example/03convert_output/primitive.go",
+          "funcs": {
+            "ConvertID": {
+              "name": "ConvertID",
+              "params": [
+                {
+                  "name": "id",
+                  "type": {
+                    "kind": "interface",
+                    "methods": [
+                      {
+                        "args": [],
+                        "kind": "func",
+                        "results": [
+                          {
+                            "kind": "primitive",
+                            "value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "returns": [
+                {
+                  "name": "",
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "selector",
+                      "prefix": "def",
+                      "value": "ID"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
