@@ -406,7 +406,9 @@ def get_type_path(value, container):
         else:
             return ["{}.{}".format(module.fullname, value["value"])]
     elif value["kind"] == "selector":
-        prefix = container.parent.imports[value["prefix"]]["fullname"]
+        if hasattr(container, "file"):
+            container = container.file
+        prefix = container.imports[value["prefix"]]["fullname"]
         return ["{}.{}".format(prefix, value["value"])]
     else:
         r = [value["kind"]]
@@ -519,8 +521,16 @@ class Function(object):
     __repr__ = repr_structure
 
     @property
+    def world(self):
+        return self.parent.world
+
+    @property
     def module(self):
         return self.parent.module
+
+    @property
+    def file(self):
+        return self.parent
 
     def add_argument(self, definition, name):
         self.args.add(definition, name)
@@ -535,8 +545,11 @@ class Function(object):
     def dump(self, writer, iw=None):
         return writer.write_function(self, iw=iw)
 
-    def __call__(self, *args):
-        return LazyFormat("{fn}({args})", args=LazyArguments(args), fn=self.name)
+    def __call__(self, *args, prefix=None):
+        if prefix:
+            LazyFormat("{prefix}.{fn}({args})", args=LazyArguments(args), fn=self.name, prefix=prefix)
+        else:
+            return LazyFormat("{fn}({args})", args=LazyArguments(args), fn=self.name)
 
 
 class Parameters(object):
@@ -545,19 +558,34 @@ class Parameters(object):
         self.args_dict = args_dict or OrderedDict()
         self.i = 0
         self.tmp_prefix = tmp_prefix
+        self.idx_map = {}
 
     def __iter__(self):
         return iter(self.args_dict.values())
+
+    def __getitem__(self, k):
+        if k in self.idx_map:
+            k = self.idx_map[k]
+        return self.args_dict[k]
+
+    @property
+    def world(self):
+        return self.parent.world
 
     @property
     def module(self):
         return self.parent.module
 
+    @property
+    def file(self):
+        return self.parent.file
+
     def add(self, definition, name=""):
         uid = name
         if not uid:
             uid = "{}{}".format(self.tmp_prefix, self.i)
-            self.i += 1
+        self.idx_map[self.i] = uid
+        self.i += 1
         self.args_dict[uid] = Parameter(name, definition, parent=self)
 
     def __str__(self):
@@ -573,21 +601,30 @@ class Parameter(object):
     __repr__ = repr_structure
 
     @property
+    def world(self):
+        return self.parent.world
+
+    @property
     def module(self):
         return self.parent.module
 
     @property
-    def world(self):
-        return self.module.parent
+    def file(self):
+        return self.parent.file
 
     @reify
     def type_expr(self):
         if isinstance(self.definition, (str, bytes)):
             return self.definition
-        elif hasattr(self.definition, "type_path"):
-            return get_type_expr(self.definition.type_path, self)
+        else:
+            return get_type_expr(self.type_path, self)
+
+    @reify
+    def type_path(self):
+        if hasattr(self.definition, "type_path"):
+            return self.definition.type_path
         else:  # maybe dict
-            return get_type_expr(get_type_path(self.definition["type"], self), self)
+            return get_type_path(self.definition["type"], self)
 
     def __str__(self):
         if self.name:

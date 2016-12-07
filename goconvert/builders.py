@@ -31,6 +31,9 @@ class DefaultStrategy(object):
         self.gencode = minicode.MinicodeGenerator(TypeMappingResolver(items))
         return self.gencode
 
+    def register(self, builder, src_type, dst_type):
+        return builder.convertor.coerce_map.as_override(src_type, dst_type)
+
 
 class ConvertFunctionBuilder(object):
     def __init__(self, universe, module, strategy):
@@ -42,6 +45,9 @@ class ConvertFunctionBuilder(object):
             self.module.name, {"name": self.module.name}
         )
         self.convertor = c.ConvertorFromMinicode(c.CoerceMap(self.gencode.resolver))
+
+    def register(self, src_type, dst_type):
+        return self.strategy.register(self, src_type, dst_type)
 
     def resolve_minicode(self, src_field, dst_field, retry=False):
         try:

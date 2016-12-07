@@ -24,7 +24,7 @@ class Reader(object):
         return module
 
     def read_file(self, data, parent=None):
-        file = structure.File(data["name"], (data.get("import") or []), parent=parent, reader=self)
+        file = structure.File(data["name"], (data.get("import") or {}), parent=parent, reader=self)
         if "alias" in data:
             for name, alias in data["alias"].items():
                 file.read_alias(name, alias)
