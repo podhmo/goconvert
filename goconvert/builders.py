@@ -96,11 +96,14 @@ class ConvertFunctionBuilder(object):
 
         dst_struct_type = s.Parameter("", dst_struct, parent=func)
         code_list = []
+        missing_list = []
         for name, dst_field in dst_struct.fields.items():
             if name in src_struct:
                 src_field = src_struct.fields[name]
                 minicode = self.resolve_minicode(src_field, dst_field)
                 code_list.append((src_field, dst_field, minicode))
+            else:
+                missing_list.append(dst_field)
 
         @func.write_function
         def write(m, iw):
@@ -110,6 +113,8 @@ class ConvertFunctionBuilder(object):
                     value = "src.{}".format(src_field.name)
                     rm, rvalue = self.convertor.code_from_minicode(c.Context(m, iw), minicode, value)
                     rm.stmt("dst.{} = {}".format(dst_field.name, rvalue))
+                for dst_field in missing_list:
+                    m.comment("FIXME: missing {}".format(dst_field.name))
                 m.return_("dst")
         return func
 
