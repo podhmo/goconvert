@@ -443,6 +443,9 @@ class Field(object):
 
     __repr__ = repr_structure
 
+    def is_embed(self):
+        return self.data.get("embed", False)
+
     @property
     def type(self):
         return self.data["type"]

@@ -21,6 +21,12 @@ type User struct {
 	Address        *Address       `json:"address"`
 }
 
+// FullUser
+type FullUser struct {
+	User
+	FullName string `json:"fullname"`
+}
+
 // Address :
 type Address struct {
 	Address string

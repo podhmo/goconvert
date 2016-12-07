@@ -389,6 +389,35 @@
                 }
               }
             },
+            "FullUser": {
+              "name": "FullUser",
+              "fields": {
+                "FullName": {
+                  "name": "FullName",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "string"
+                    }
+                  },
+                  "embed": false
+                },
+                "User": {
+                  "name": "User",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "User"
+                    }
+                  },
+                  "embed": true
+                }
+              }
+            },
             "User": {
               "name": "User",
               "fields": {
@@ -424,18 +453,6 @@
                     "value": {
                       "kind": "primitive",
                       "value": "ID"
-                    }
-                  },
-                  "embed": false
-                },
-                "FullName": {
-                  "name": "FullName",
-                  "tags": {},
-                  "type": {
-                    "kind": "pointer",
-                    "value": {
-                      "kind": "primitive",
-                      "value": "string"
                     }
                   },
                   "embed": false

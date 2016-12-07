@@ -12,13 +12,18 @@ type ID string
 type User struct {
 	ID             *ID
 	Name           *string
-	FullName       *string
 	Email          *Email
 	Address        *Address
 	GoogleAuthID   *ID
 	TwitterAuthID  *ID
 	FacebookAuthID *ID
 	GithubAuthID   *ID
+}
+
+// FullUser :
+type FullUser struct {
+	FullName *string
+	*User
 }
 
 // Address :

@@ -96,24 +96,32 @@ class ConvertFunctionBuilder(object):
 
         dst_struct_type = s.Parameter("", dst_struct, parent=func)
         code_list = []
-        missing_list = []
-        for name, dst_field in dst_struct.fields.items():
-            if name in src_struct:
-                src_field = src_struct.fields[name]
-                minicode = self.resolve_minicode(src_field, dst_field)
-                code_list.append((src_field, dst_field, minicode))
-            else:
-                missing_list.append(dst_field)
+        missing_fields = dict(dst_struct.fields.items())
+
+        def iterate(src_struct, missing_fields):
+            for name, dst_field in list(missing_fields.items()):
+                if name in src_struct:
+                    src_field = src_struct.fields[name]
+                    code = self.resolve_minicode(src_field, dst_field)
+                    code_list.append((src_field, dst_field, code))
+                    missing_fields.pop(name)
+
+            # ?alias with embed?
+
+            for src_field in src_struct.fields.values():
+                if src_field.is_embed():
+                    iterate(src_field.definition, missing_fields)
+        iterate(src_struct, missing_fields)
 
         @func.write_function
         def write(m, iw):
             with m.func(func.name, func.args, return_=func.returns):
                 m.stmt("dst := &{name}{{}}".format(name=dst_struct_type.type_expr))
-                for src_field, dst_field, minicode in code_list:
+                for src_field, dst_field, code in code_list:
                     value = "src.{}".format(src_field.name)
-                    rm, rvalue = self.convertor.code_from_minicode(c.Context(m, iw), minicode, value)
+                    rm, rvalue = self.convertor.code_from_minicode(c.Context(m, iw), code, value)
                     rm.stmt("dst.{} = {}".format(dst_field.name, rvalue))
-                for dst_field in missing_list:
+                for _, dst_field in sorted(missing_fields.items()):
                     m.comment("FIXME: missing {}".format(dst_field.name))
                 m.return_("dst")
         return func

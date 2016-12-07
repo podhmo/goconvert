@@ -4188,6 +4188,33 @@
                 }
               }
             },
+            "FullUser": {
+              "name": "FullUser",
+              "fields": {
+                "FullName": {
+                  "name": "FullName",
+                  "tags": {
+                    "json": [
+                      "fullname"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "string"
+                  },
+                  "embed": false
+                },
+                "User": {
+                  "name": "User",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "User"
+                  },
+                  "embed": true
+                }
+              }
+            },
             "User": {
               "name": "User",
               "fields": {
