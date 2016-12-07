@@ -1,16 +1,15 @@
 package convert
 
 import (
-	"github.com/podhmo/hmm/def"
-	"github.com/wacul/ptr"
+	"github.com/podhmo/hmm/dst"
+	"gopkg.in/mgo.v2/bson"
 )
 
-// ConvertID will convert bson.ObjectId to *def.ID
-func ConvertID(id interface {
-	Hex() string
-}) *def.ID {
+// ConvertID will convert bson.ObjectId to *dst.ID
+func ConvertID(id bson.ObjectId) *dst.ID {
 	if id == nil {
 		return nil
 	}
-	return (*def.ID)(ptr.String(id.Hex()))
+    x := id.Hex()
+	return (*dst.ID)(&x)
 }

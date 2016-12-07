@@ -2,9 +2,10 @@ import sys  # NOQA
 import argparse
 import json
 from collections import OrderedDict
-from goconvert import Reader, Writer
 from prestring.go import GoModule  # NOQA
+from goconvert import Reader, Writer
 from goconvert import builders
+from goconvert import structure
 
 
 def run(src_file, dst_file, override_file):
@@ -18,11 +19,20 @@ def run(src_file, dst_file, override_file):
     strategy = builders.DefaultStrategy(reader.universe)
     b = builders.ConvertFunctionBuilder(reader.universe, convert_module, strategy)
 
+    for name, maybe_fn in convert_module.members.items():
+        if isinstance(maybe_fn, structure.Function):
+            @b.register(maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path)
+            def call(context, value, fn=maybe_fn):
+                if fn.module == convert_module:
+                    return fn(value)
+                else:
+                    context.iw.import_(fn.module)
+                    return fn(value, prefix=fn.module)
+
     src = reader.universe.find_module("github.com/podhmo/hmm/src")
     dst = reader.universe.find_module("github.com/podhmo/hmm/dst")
     fnname = b.get_functioname(src["User"], dst["User"])
     func = b.build(fnname, src["User"], dst["User"])
-    convert_module.find_
     print(func.parent.dump(writer))
 
 

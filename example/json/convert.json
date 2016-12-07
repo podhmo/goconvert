@@ -6,7 +6,7 @@
       "file": {
         "../example/03convert_output/convert.go": {
           "name": "../example/03convert_output/convert.go",
-          "funcs": {
+          "function": {
             "AddressToAddress": {
               "name": "AddressToAddress",
               "params": [
@@ -65,30 +65,32 @@
                 }
               ]
             }
+          },
+          "import": {
+            "dst": {
+              "name": "dst",
+              "fullname": "github.com/podhmo/hmm/dst",
+              "needparse": false
+            },
+            "src": {
+              "name": "src",
+              "fullname": "github.com/podhmo/hmm/src",
+              "needparse": false
+            }
           }
         },
         "../example/03convert_output/primitive.go": {
           "name": "../example/03convert_output/primitive.go",
-          "funcs": {
+          "function": {
             "ConvertID": {
               "name": "ConvertID",
               "params": [
                 {
                   "name": "id",
                   "type": {
-                    "kind": "interface",
-                    "methods": [
-                      {
-                        "args": [],
-                        "kind": "func",
-                        "results": [
-                          {
-                            "kind": "primitive",
-                            "value": "string"
-                          }
-                        ]
-                      }
-                    ]
+                    "kind": "selector",
+                    "prefix": "bson",
+                    "value": "ObjectId"
                   }
                 }
               ],
@@ -99,12 +101,24 @@
                     "kind": "pointer",
                     "value": {
                       "kind": "selector",
-                      "prefix": "def",
+                      "prefix": "dst",
                       "value": "ID"
                     }
                   }
                 }
               ]
+            }
+          },
+          "import": {
+            "bson": {
+              "name": "bson",
+              "fullname": "gopkg.in/mgo.v2/bson",
+              "needparse": false
+            },
+            "dst": {
+              "name": "dst",
+              "fullname": "github.com/podhmo/hmm/dst",
+              "needparse": false
             }
           }
         }
