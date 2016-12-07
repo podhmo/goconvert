@@ -12,6 +12,7 @@ type Email strfmt.Email
 type User struct {
 	Id             bson.ObjectId  `bson:"_id" json:"id"`
 	Name           string         `json:"name"`
+	LastName       string         `json:"lastname"`
 	Email          Email          `json:"email"`
 	GoogleAuthID   *bson.ObjectId `bson:"googleAuthId,omitempty" json:"googleAuthId,omitempty"`
 	TwitterAuthID  *bson.ObjectId `bson:"twitterAuthId,omitempty" json:"twitterAuthId,omitempty"`

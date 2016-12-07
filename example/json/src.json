@@ -4303,6 +4303,19 @@
                   },
                   "embed": false
                 },
+                "LastName": {
+                  "name": "LastName",
+                  "tags": {
+                    "json": [
+                      "lastname"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "string"
+                  },
+                  "embed": false
+                },
                 "Name": {
                   "name": "Name",
                   "tags": {

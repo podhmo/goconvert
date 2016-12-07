@@ -8,7 +8,7 @@ example:
 	python example/example/01testdata.py --src example/json/src.json --src-package src --package testdata > example/example/01testdata.output.go
 	python example/example/02separated.py --src example/json/src.json --src-package src --package testdata --dst example/example/02separated_output/testdata
 	gofmt -w example/example/02*/**/*.go
-	python example/example/03convert.py --src example/json/src.json --dst example/json/dst.json > example/example/03convert_output/convert.go
+	python example/example/03convert.py --src example/json/src.json --dst example/json/dst.json --override example/json/convert.json > example/example/03convert_output/autogen_convert.go
 	gofmt -w example/example/03*/*.go
 
 all: json example

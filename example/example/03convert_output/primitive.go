@@ -7,7 +7,7 @@ import (
 
 // ConvertID will convert bson.ObjectId to *dst.ID
 func ConvertID(id bson.ObjectId) *dst.ID {
-    x := id.Hex()
+	x := id.Hex()
 	return (*dst.ID)(&x)
 }
 
@@ -16,6 +16,6 @@ func ConvertIDPtr(id *bson.ObjectId) *dst.ID {
 	if id == nil {
 		return nil
 	}
-    x := *id.Hex()
+	x := *id.Hex()
 	return (*dst.ID)(&x)
 }

@@ -31,6 +31,7 @@ type User struct {
 	GithubAuthID *bson.ObjectId  `bson:"githubAuthId,omitempty" json:"githubAuthId,omitempty"`
 	GoogleAuthID *bson.ObjectId  `bson:"googleAuthId,omitempty" json:"googleAuthId,omitempty"`
 	Id bson.ObjectId  `bson:"_id" json:"id"`
+	LastName string  `json:"lastname"`
 	Name string  `json:"name"`
 	TwitterAuthID *bson.ObjectId  `bson:"twitterAuthId,omitempty" json:"twitterAuthId,omitempty"`
 }

@@ -12,6 +12,7 @@ type ID string
 type User struct {
 	ID             *ID
 	Name           *string
+	FullName       *string
 	Email          *Email
 	Address        *Address
 	GoogleAuthID   *ID

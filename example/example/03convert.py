@@ -46,5 +46,5 @@ def main():
     return run(args.src, args.dst, args.override)
 
 if __name__ == "__main__":
-    # main()
-    run("../json/src.json", "../json/dst.json", "../json/convert.json")
+    main()
+    # run("../json/src.json", "../json/dst.json", "../json/convert.json")

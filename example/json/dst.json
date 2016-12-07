@@ -428,6 +428,18 @@
                   },
                   "embed": false
                 },
+                "FullName": {
+                  "name": "FullName",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "string"
+                    }
+                  },
+                  "embed": false
+                },
                 "GithubAuthID": {
                   "name": "GithubAuthID",
                   "tags": {},
