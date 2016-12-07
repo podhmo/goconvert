@@ -56,6 +56,8 @@ class TypeMappingResolver(object):
         dst = _wrap_value(dst)
         if src[-1:] == dst[-1:]:
             return self.on_finish([src], [dst])
+        elif self.has_relation(src, dst):
+            return self.on_finish([src, dst], [dst])
         else:
             # print("detail_map=", self.detail_map)
             # print("primitive_map=", self.primitive_map)
