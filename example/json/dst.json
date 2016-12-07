@@ -418,6 +418,35 @@
                 }
               }
             },
+            "Skill": {
+              "name": "Skill",
+              "fields": {
+                "ID": {
+                  "name": "ID",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "ID"
+                    }
+                  },
+                  "embed": false
+                },
+                "Name": {
+                  "name": "Name",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "string"
+                    }
+                  },
+                  "embed": false
+                }
+              }
+            },
             "User": {
               "name": "User",
               "fields": {
@@ -501,6 +530,18 @@
                     "value": {
                       "kind": "primitive",
                       "value": "string"
+                    }
+                  },
+                  "embed": false
+                },
+                "Skills": {
+                  "name": "Skills",
+                  "tags": {},
+                  "type": {
+                    "kind": "array",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "Skill"
                     }
                   },
                   "embed": false

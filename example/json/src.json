@@ -4221,6 +4221,9 @@
                 "Address": {
                   "name": "Address",
                   "tags": {
+                    "bson": [
+                      "addresss"
+                    ],
                     "json": [
                       "address"
                     ]
@@ -4353,6 +4356,25 @@
                   "type": {
                     "kind": "primitive",
                     "value": "string"
+                  },
+                  "embed": false
+                },
+                "Skills": {
+                  "name": "Skills",
+                  "tags": {
+                    "bson": [
+                      "skills"
+                    ],
+                    "json": [
+                      "skills"
+                    ]
+                  },
+                  "type": {
+                    "kind": "array",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "Skill"
+                    }
                   },
                   "embed": false
                 },

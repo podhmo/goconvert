@@ -18,7 +18,8 @@ type User struct {
 	TwitterAuthID  *bson.ObjectId `bson:"twitterAuthId,omitempty" json:"twitterAuthId,omitempty"`
 	FacebookAuthID *bson.ObjectId `bson:"facebookAuthId,omitempty" json:"facebookAuthId,omitempty"`
 	GithubAuthID   *bson.ObjectId `bson:"githubAuthId,omitempty" json:"githubAuthId,omitempty"`
-	Address        *Address       `json:"address"`
+	Address        *Address       `bson:"addresss" json:"address"`
+	Skills         []Skill        `bson:"skills" json:"skills"`
 }
 
 // FullUser

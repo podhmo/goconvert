@@ -18,6 +18,7 @@ type User struct {
 	TwitterAuthID  *ID
 	FacebookAuthID *ID
 	GithubAuthID   *ID
+	Skills         []Skill
 }
 
 // FullUser :
@@ -29,4 +30,10 @@ type FullUser struct {
 // Address :
 type Address struct {
 	Address *string
+}
+
+// Skill :
+type Skill struct {
+	ID   *ID
+	Name *string
 }

@@ -99,8 +99,8 @@ class MinicodeNormalizer(object):
             if ac[0] == "dearray":
                 stack.append(["iterate"])
             elif ac[0] == "array":
-                sub_code = stack.pop()
-                stack[-1].append(tuple(sub_code))
+                subcode = stack.pop()
+                stack[-1].append(Action(action=subcode[0], src=[], dst=subcode[1:]))
             else:
                 stack[-1].append(ac)
         assert len(stack) == 1
@@ -178,11 +178,28 @@ class MinicodeGenerator(object):
                 else:
                     return self.on_missing_mapping(action.src, action.dst)
             elif action.action == 'iterate':
-                self.verify_minicode(action[1:])
-                if action[1].action == "coerce" and action[-1].action == "coerce":
-                    src = ('array', *action[1].src)
-                    dst = ('array', *action[-1].dst)
-                    if not self.resolver.has_relation(src, dst):
-                        return self.on_missing_mapping(action.src, action.dst, exc=ArrayTypeToArrayTypeNotResolved)
+                self.verify_minicode(action.dst)
+                subcode = action.dst
+                i = 0
+                found = False
+                for i, ac in enumerate(subcode):
+                    if ac[0] == "coerce":
+                        found = True
+                        break
+
+                if not found:
+                    return
+
+                for j, ac in enumerate(reversed(subcode)):
+                    if ac[0] == "coerce":
+                        break
+                j = (-1 * j) - 1
+                while subcode[j][0] != "coerce":
+                    j -= 1
+
+                src = ('array', *subcode[i].src)
+                dst = ('array', *subcode[j].dst)
+                if not self.resolver.has_relation(src, dst):
+                    return self.on_missing_mapping(src, dst, exc=ArrayTypeToArrayTypeNotResolved)
             else:
                 raise NotImplementedError(action)
