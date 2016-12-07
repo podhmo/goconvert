@@ -4,8 +4,8 @@
       "name": "convert",
       "fullname": "github.com/podhmo/hmm/example/03convert_output",
       "file": {
-        "../example/03convert_output/convert.go": {
-          "name": "../example/03convert_output/convert.go",
+        "../example/03convert_output/autogen_convert.go": {
+          "name": "../example/03convert_output/autogen_convert.go",
           "function": {
             "AddressToAddress": {
               "name": "AddressToAddress",
@@ -91,6 +91,35 @@
                     "kind": "selector",
                     "prefix": "bson",
                     "value": "ObjectId"
+                  }
+                }
+              ],
+              "returns": [
+                {
+                  "name": "",
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "selector",
+                      "prefix": "dst",
+                      "value": "ID"
+                    }
+                  }
+                }
+              ]
+            },
+            "ConvertIDPtr": {
+              "name": "ConvertIDPtr",
+              "params": [
+                {
+                  "name": "id",
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "selector",
+                      "prefix": "bson",
+                      "value": "ObjectId"
+                    }
                   }
                 }
               ],

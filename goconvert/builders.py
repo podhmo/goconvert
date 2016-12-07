@@ -21,6 +21,11 @@ class DefaultStrategy(object):
     def get_gencode(self):
         if self.gencode is not None:
             return self.gencode
+        items = self.collect_aliases()
+        self.gencode = minicode.MinicodeGenerator(TypeMappingResolver(items))
+        return self.gencode
+
+    def collect_aliases(self):
         items = []
         for world in self.universe.worlds.values():
             for module in world.modules.values():
@@ -28,8 +33,21 @@ class DefaultStrategy(object):
                     for alias in file.aliases.values():
                         item = (alias.type_path, alias.fullname)
                         items.append(item)
-        self.gencode = minicode.MinicodeGenerator(TypeMappingResolver(items))
-        return self.gencode
+        return items
+
+    def collect_functions(self, module):
+        triples = []
+        for name, maybe_fn in module.members.items():
+            if isinstance(maybe_fn, s.Function):
+                def call(context, value, fn=maybe_fn, module=module):
+                    if fn.module == module:
+                        return fn(value)
+                    else:
+                        context.iw.import_(fn.module)
+                        return fn(value, prefix=fn.module)
+                item = (maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path, call)
+                triples.append(item)
+        return triples
 
     def register(self, builder, src_type, dst_type):
         return builder.convertor.coerce_map.as_override(src_type, dst_type)

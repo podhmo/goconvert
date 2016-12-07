@@ -20,14 +20,15 @@ def run(src_file, dst_file, override_file):
     b = builders.ConvertFunctionBuilder(reader.universe, convert_module, strategy)
 
     for name, maybe_fn in convert_module.members.items():
-        if isinstance(maybe_fn, structure.Function):
-            @b.register(maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path)
-            def call(context, value, fn=maybe_fn):
-                if fn.module == convert_module:
-                    return fn(value)
-                else:
-                    context.iw.import_(fn.module)
-                    return fn(value, prefix=fn.module)
+        if "autogen_" not in maybe_fn.file.name:
+            if isinstance(maybe_fn, structure.Function):
+                @b.register(maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path)
+                def call(context, value, fn=maybe_fn, module=convert_module):
+                    if fn.module == module:
+                        return fn(value)
+                    else:
+                        context.iw.import_(fn.module)
+                        return fn(value, prefix=fn.module)
 
     src = reader.universe.find_module("github.com/podhmo/hmm/src")
     dst = reader.universe.find_module("github.com/podhmo/hmm/dst")
