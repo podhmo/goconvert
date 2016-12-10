@@ -57,7 +57,7 @@ class ConvertorFromMinicode(object):
                     r.append("[]")
                 else:
                     r.append(x.rsplit("/", 1)[-1])
-            return "{}({})".format("".join(r), value)
+            return "({})({})".format("".join(r), value)
         elif "/" in dst_type:
             prefix, name = dst_type.rsplit(".")
             if context.iw:
@@ -71,7 +71,7 @@ class ConvertorFromMinicode(object):
         return self.coerce_map[pair](context, value)
 
     def code_from_minicode(self, context, code, value):
-        is_cast = False
+        need_tmp = False
         # optimization: x -> y; y -> z => z(x)
         coerce_buf = []
 
@@ -87,11 +87,11 @@ class ConvertorFromMinicode(object):
         m = context.m
 
         for i, op in enumerate(code):
-            if is_cast:
+            if need_tmp:
                 tmp = self.gensym()
                 m.stmt("{} := {}".format(tmp, value))
                 value = tmp
-                is_cast = False
+                need_tmp = False
 
             if op[0] == "deref":
                 value = consume_buf(value)
@@ -103,7 +103,7 @@ class ConvertorFromMinicode(object):
             elif op[0] == "ref":
                 value = consume_buf(value)
                 value = "&({})".format(value)
-                is_cast = True
+                need_tmp = False
             elif op[0] == "coerce":
                 pair = (op[1], op[2])
                 if pair not in self.coerce_map:
@@ -111,11 +111,11 @@ class ConvertorFromMinicode(object):
                     continue
                 value = consume_buf(value)
                 value = self.coerce(context, value, op[1], op[2])
-                is_cast = True
+                need_tmp = True
             elif op[0][0] == "iterate":
                 value = consume_buf(value)
                 value = self.iterate(context, value, op[1], op[2])
-                is_cast = True
+                need_tmp = True
             else:
                 value = consume_buf(value)
                 raise NotImplementedError(op)
