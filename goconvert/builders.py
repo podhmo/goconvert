@@ -77,6 +77,7 @@ class CodeGenerator(object):
         # TODO: alias
         fnname = self.array_definition.get_functioname(src, dst)  # xxx
         subfn = self.array_definition._define(fnname, src, dst, e)
+
         @self.registration.register(e.src_path, e.dst_path)
         def use_subfn(context, value):
             return subfn(value)
@@ -150,9 +151,9 @@ class CoerceRegistration(object):
                 triples.append(item)
         return triples
 
-    def register_from_module(self, module, skip=lambda fn: fn.file.name.startswith("autogen_")):
+    def register_from_module(self, module, skip):
         for name, maybe_fn in module.members.items():
-            if skip(maybe_fn):
+            if skip and skip(maybe_fn):
                 continue
             if isinstance(maybe_fn, s.Function):
                 @self.register(maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path)
@@ -211,7 +212,7 @@ class ArrayConvertDefinition(object):
         k = ":".join(map(str, (e.src_path, e.dst_path)))
         func = self.cache[k] = s.Function(fnname, parent=parent or self.default_file)
         func.parent.add_function(func.name, func)
-        func.add_argument(src, "src")
+        func.add_argument(src, "from")
         func.add_return_value(dst)
 
         dst_array_type = s.Parameter("", dst, parent=func)
@@ -220,12 +221,12 @@ class ArrayConvertDefinition(object):
         def write(m, iw):
             m.comment("{} :".format(func.name))
             with m.func(func.name, func.args, return_=func.returns):
-                m.stmt("dst := make({name}, len(src))".format(name=dst_array_type.type_expr))
-                with m.for_("i, x := range src"):
-                    value = "src[i]"
+                m.stmt("to := make({name}, len(from))".format(name=dst_array_type.type_expr))
+                with m.for_("i := range from"):
+                    value = "from[i]"
                     rm, rvalue = self.convertor.code_from_minicode(c.Context(m, iw), inner_code, value)
-                    rm.stmt("dst[i] = {}".format(rvalue))
-                m.return_("dst")
+                    rm.stmt("to[i] = {}".format(rvalue))
+                m.return_("to")
         return func
 
 
@@ -251,7 +252,7 @@ class StructConvertDefinition(object):
     def define(self, fnname, src_struct, dst_struct, parent=None):
         func = s.Function(fnname, parent=parent or self.default_file)
         func.parent.add_function(func.name, func)
-        func.add_argument(src_struct.pointer, "src")
+        func.add_argument(src_struct.pointer, "from")
         func.add_return_value(dst_struct.pointer)
 
         dst_struct_type = s.Parameter("", dst_struct, parent=func)
@@ -277,14 +278,14 @@ class StructConvertDefinition(object):
         def write(m, iw):
             m.comment("{} :".format(func.name))
             with m.func(func.name, func.args, return_=func.returns):
-                m.stmt("dst := &{name}{{}}".format(name=dst_struct_type.type_expr))
+                m.stmt("to := &{name}{{}}".format(name=dst_struct_type.type_expr))
                 for src_field, dst_field, code in code_list:
-                    value = "src.{}".format(src_field.name)
+                    value = "from.{}".format(src_field.name)
                     rm, rvalue = self.convertor.code_from_minicode(c.Context(m, iw), code, value)
-                    rm.stmt("dst.{} = {}".format(dst_field.name, rvalue))
+                    rm.stmt("to.{} = {}".format(dst_field.name, rvalue))
                 for _, dst_field in sorted(missing_fields.items()):
                     m.comment("FIXME: missing {}".format(dst_field.name))
-                m.return_("dst")
+                m.return_("to")
         return func
 
 
@@ -301,8 +302,8 @@ class ConvertBuilder:
     def __init__(self, universe, module, registry_factory=get_convert_registry):
         self.registry = registry_factory(universe, module)
 
-    def register_from_module(self, module):
-        return self.registry.get_implementation(Impl.registration).register_from_module(module)
+    def register_from_module(self, module, skip=lambda fn: "autogen_" in fn.file.name):
+        return self.registry.get_implementation(Impl.registration).register_from_module(module, skip)
 
     def build_struct_convert(self, src, dst, name=None):
         struct_definition = self.registry.get_implementation(Impl.struct)

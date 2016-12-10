@@ -16,7 +16,7 @@ def run(src_file, dst_file, override_file):
 
     convert_module = reader.universe.create_module("convert", "github.com/podhmo/hmm/example/03convert_output")
     b = builders.ConvertBuilder(reader.universe, convert_module)
-    b.register_from_module(convert_module)
+    b.register_from_module(convert_module, skip=lambda fn: "autogen_" in fn.file.name)
 
     src = reader.universe.find_module("github.com/podhmo/hmm/src")
     dst = reader.universe.find_module("github.com/podhmo/hmm/dst")
