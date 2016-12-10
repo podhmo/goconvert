@@ -3,27 +3,119 @@ from . import minicode
 from . import convertor as c
 from . import structure as s
 from . import langhelpers
-
-"""
-interface BuildStrategy:
-    get_functioname(Struct, Struct): string
-"""
+from .langhelpers import reify
 
 
-class DefaultStrategy(object):
-    def __init__(self, universe):
+class Impl:
+    struct = "struct"
+    array = "array"
+    registration = "registration"
+    codegenerator = "codegenerator"
+
+
+class Registry(object):
+    def __init__(self, universe, registry=None):
         self.universe = universe
-        self.gencode = None
+        self.registry = {}
 
-    def get_convert_name(self, src, dst):
-        return "{}To{}".format(langhelpers.titlize(src.name), langhelpers.titlize(dst.name))
+    def register_implementation(self, name, impl):
+        self.registry[name] = impl
 
-    def get_gencode(self):
-        if self.gencode is not None:
-            return self.gencode
+    def get_implementation(self, name):
+        return self.registry[name]
+
+
+class CodeGenerator(object):
+    impl_type = Impl.codegenerator
+
+    def __init__(self, registry):
+        self.registry = registry
+
+        self.registry.register_implementation(self.impl_type, self)  # xxx
+
+    @reify
+    def universe(self):
+        return self.registry.universe
+
+    @reify
+    def gencode(self):
+        registration = self.registry.get_implementation(Impl.registration)
+        return minicode.MinicodeGenerator(registration.resolver)
+
+    @reify
+    def array_builder(self):
+        return self.registry.get_implementation(Impl.array)
+
+    @reify
+    def struct_builder(self):
+        return self.registry.get_implementation(Impl.struct)
+
+    def on_struct_conversion_notfound(self, src, dst, e):
+        # TODO: alias
+        if isinstance(src, s.Struct) and isinstance(dst, s.Struct):
+            fnname = self.get_functioname(src, dst)
+            subfn = self.array_builder.build(fnname, src, dst)
+
+            @self.coerce_map.register(src.pointer.type_path, dst.pointer.type_path)
+            def use_subfn(context, value):
+                return subfn(value)
+        else:
+            raise NotImplementedError(e)
+
+    def on_array_conversion_notfound(self, src, dst, e):
+        # TODO: alias
+        if isinstance(src, s.Struct) and isinstance(dst, s.Struct):
+            fnname = self.get_functioname(src, dst)
+            subfn = self.array_builder.build(fnname, src, dst)
+
+            @self.coerce_map.register(src.pointer.type_path, dst.pointer.type_path)
+            def use_subfn(context, value):
+                return subfn(value)
+        else:
+            raise NotImplementedError(e)
+
+    def generate_minicode(self, src_field, dst_field, retry=False):
+        try:
+            return self.gencode.gencode(src_field.type_path, dst_field.type_path)
+        except minicode.ArrayTypeToArrayTypeNotResolved as e:
+            if retry:
+                raise
+            src = self.universe.find_definition(e.src_path[-1])
+            dst = self.universe.find_definition(e.dst_path[-1])
+            self.on_array_conversion_notfound(src, dst)
+        except minicode.TypeToTypeNotResolved as e:
+            if retry:
+                raise
+            src = self.universe.find_definition(e.src_path[-1])
+            dst = self.universe.find_definition(e.dst_path[-1])
+            self.on_struct_conversion_notfound(src, dst)
+        return self.generate_minicode(src_field, dst_field, retry=True)
+
+
+class CoerceRegistration(object):
+    impl_type = Impl.registration
+
+    def __init__(self, registry):
+        self.registry = registry
+
+        self.registry.register_implementation(self.impl_type, self)  # xxx
+
+    @reify
+    def universe(self):
+        return self.registry.universe
+
+    @reify
+    def resolver(self):
         items = self.collect_aliases()
-        self.gencode = minicode.MinicodeGenerator(TypeMappingResolver(items))
-        return self.gencode
+        return TypeMappingResolver(items)
+
+    @reify
+    def convertor(self):
+        self.registry.get_implementation(Impl.codegenerator)
+        return c.ConvertorFromMinicode(c.CoerceMap(self.resolver))
+
+    def register(self, src_type, dst_type):
+        return self.convertor.coerce_map.as_override(src_type, dst_type)
 
     def collect_aliases(self):
         items = []
@@ -49,43 +141,68 @@ class DefaultStrategy(object):
                 triples.append(item)
         return triples
 
-    def register(self, builder, src_type, dst_type):
-        return builder.convertor.coerce_map.as_override(src_type, dst_type)
+    def register_from_module(self, module, skip=lambda fn: fn.file.name.startswith("autogen_")):
+        for name, maybe_fn in module.members.items():
+            if skip(maybe_fn):
+                continue
+            if isinstance(maybe_fn, s.Function):
+                @self.register(maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path)
+                def call(context, value, fn=maybe_fn, module=module):
+                    if fn.module == module:
+                        return fn(value)
+                    else:
+                        context.iw.import_(fn.module)
+                        return fn(value, prefix=fn.module)
 
 
-class ConvertFunctionBuilder(object):
-    def __init__(self, universe, module, strategy):
-        self.universe = universe
+class ArrayConvertDefinition(object):
+    impl_type = Impl.array
+
+    def __init__(self, registry, module):
         self.module = module  # output module
-        self.strategy = strategy
-        self.gencode = strategy.get_gencode()
+        self.registry = registry
+
+        self.registry.register_implementation(self.impl_type, self)  # xxx
+
+    @reify
+    def universe(self):
+        return self.registry.universe
+
+    @reify
+    def struct_builder(self):
+        return self.registry.get_implementation(Impl.struct)
+
+
+class StructConvertDefinition(object):
+    impl_type = Impl.struct
+
+    def __init__(self, registry, module):
+        self.registry = registry
+        self.module = module  # output module
         self.default_file = self.module.read_file(
             self.module.name, {"name": self.module.name}
         )
-        self.convertor = c.ConvertorFromMinicode(c.CoerceMap(self.gencode.resolver))
 
-    def register(self, src_type, dst_type):
-        return self.strategy.register(self, src_type, dst_type)
+        self.registry.register_implementation(self.impl_type, self)  # xxx
 
-    def resolve_minicode(self, src_field, dst_field, retry=False):
-        try:
-            return self.gencode.gencode(src_field.type_path, dst_field.type_path)
-        except minicode.TypeToTypeNotResolved as e:
-            if retry:
-                raise
+    @reify
+    def universe(self):
+        return self.registry.universe
 
-            # TODO: alias
-            src = self.universe.find_definition(e.src_path[-1])
-            dst = self.universe.find_definition(e.dst_path[-1])
-            if isinstance(src, s.Struct) and isinstance(dst, s.Struct):
-                fnname = self.get_functioname(src, dst)
-                subfn = self.build(fnname, src, dst)
+    @reify
+    def coerce_map(self):
+        return self.registry.get_implementation(Impl.registration)
 
-                def use_subfn(context, value):
-                    return subfn(value)
-                self.convertor.coerce_map.override(src.pointer.type_path, dst.pointer.type_path, use_subfn)
+    @reify
+    def convertor(self):
+        return self.coerce_map.convertor
 
-            return self.resolve_minicode(src_field, dst_field, retry=True)
+    @reify
+    def codegenerator(self):
+        return self.registry.get_implementation(Impl.codegenerator)
+
+    def get_functioname(self, src, dst):
+        return "{}To{}".format(langhelpers.titlize(src.name), langhelpers.titlize(dst.name))
 
     def build(self, fnname, src_struct, dst_struct, parent=None):
         # todo: register
@@ -102,7 +219,7 @@ class ConvertFunctionBuilder(object):
             for name, dst_field in list(missing_fields.items()):
                 if name in src_struct:
                     src_field = src_struct.fields[name]
-                    code = self.resolve_minicode(src_field, dst_field)
+                    code = self.codegenerator.generate_minicode(src_field, dst_field)
                     code_list.append((src_field, dst_field, code))
                     missing_fields.pop(name)
 
@@ -126,5 +243,24 @@ class ConvertFunctionBuilder(object):
                 m.return_("dst")
         return func
 
-    def get_functioname(self, src, dst):
-        return self.strategy.get_convert_name(src, dst)
+
+def get_convert_registry(universe, module):
+    registry = Registry(universe)
+    StructConvertDefinition(registry, module)
+    ArrayConvertDefinition(registry, module)
+    CodeGenerator(registry)
+    CoerceRegistration(registry)
+    return registry
+
+
+class ConvertBuilder:
+    def __init__(self, universe, module, registry_factory=get_convert_registry):
+        self.registry = registry_factory(universe, module)
+
+    def register_from_module(self, module):
+        return self.registry.get_implementation(Impl.registration).register_from_module(module)
+
+    def build_struct_convert(self, src, dst, name=None):
+        b = self.registry.get_implementation(Impl.struct)
+        name = name or b.get_functioname(src, dst)
+        return b.build(name, src, dst)
