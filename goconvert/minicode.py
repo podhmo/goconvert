@@ -99,10 +99,13 @@ class MinicodeNormalizer(object):
         stack = [[]]
         for ac in code:
             if ac[0] == "dearray":
-                stack.append(["iterate"])
+                src_type = ac[1]
+                stack.append([("iterate", src_type)])
             elif ac[0] == "array":
                 subcode = stack.pop()
-                stack[-1].append(Action(action=subcode[0], src=[], dst=subcode[1:]))
+                name, src_type = subcode[0]
+                dst_type = ac[1]
+                stack[-1].append(Action(action=("iterate", *subcode[1:]), src=src_type, dst=dst_type))
             else:
                 stack[-1].append(ac)
         assert len(stack) == 1
@@ -147,20 +150,23 @@ class MinicodeGenerator(object):
                 code.append(action)
                 continue
 
-            for typ in action.src[:-1]:
+            for i, typ in enumerate(action.src[:-1]):
                 if typ == "pointer":
                     code.append(("deref", ))
                 elif typ == "array":
-                    code.append(("dearray",))
+                    code.append(("dearray", tuple(action.src[i:])))
                 else:
                     raise ValueError("not implemented: typ={}, path={}".format(typ, action.src))
+
+            # pointer, array, X => X, array, pointer
             itr = reversed(action.dst)
-            next(itr)
+            tmp = [next(itr)]
             for typ in itr:
+                tmp.append(typ)
                 if typ == "pointer":
                     code.append(("ref", ))
                 elif typ == "array":
-                    code.append(("array",))
+                    code.append(("array", tuple(reversed(tmp))))
                 else:
                     raise ValueError("not implemented: typ={}, path={}".format(typ, action.dst))
         return code
@@ -172,36 +178,14 @@ class MinicodeGenerator(object):
             elif action == ('deref', ):
                 continue
             elif action.action == 'coerce':
-                if self.resolver.has_relation(action.src, action.dst):
-                    continue
-                else:
+                if not self.resolver.has_relation(action.src, action.dst):
                     msg = "mapping not found {!r} -> {!r}".format(action.src, action.dst)
                     raise TypeToTypeNotResolved(msg, action.src, action.dst)
 
-            elif action.action == 'iterate':
-                self.verify_minicode(action.dst)
-                subcode = action.dst
-                i = 0
-                found = False
-                for i, ac in enumerate(subcode):
-                    if ac[0] == "coerce":
-                        found = True
-                        break
-
-                if not found:
-                    return
-
-                for j, ac in enumerate(reversed(subcode)):
-                    if ac[0] == "coerce":
-                        break
-                j = (-1 * j) - 1
-                while subcode[j][0] != "coerce":
-                    j -= 1
-
-                src = ('array', *subcode[i].src)
-                dst = ('array', *subcode[j].dst)
-                if not self.resolver.has_relation(src, dst):
-                    msg = "array mapping not found {!r} -> {!r}".format(src, dst)
-                    raise ArrayTypeToArrayTypeNotResolved(msg, src, dst, subcode)
+            elif action.action[0] == 'iterate':
+                self.verify_minicode(action.action[1:])
+                if not self.resolver.has_relation(action.src, action.dst):
+                    msg = "arary mapping not found {!r} -> {!r}".format(action.src, action.dst)
+                    raise ArrayTypeToArrayTypeNotResolved(msg, action.src, action.dst, action.action[1:])
             else:
                 raise NotImplementedError(action)

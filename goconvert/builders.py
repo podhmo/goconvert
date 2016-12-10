@@ -75,15 +75,11 @@ class CodeGenerator(object):
 
     def on_array_conversion_notfound(self, src, dst, e):
         # TODO: alias
-        if isinstance(src, s.Struct) and isinstance(dst, s.Struct):
-            fnname = self.array_definition.get_functioname(src, dst)  # xxx
-            subfn = self.array_definition._define(fnname, src, dst, e.inner_code)
-
-            @self.registration.register(src.array.type_path, dst.array.type_path)
-            def use_subfn(context, value):
-                return subfn(value)
-        else:
-            raise NotImplementedError(e)
+        fnname = self.array_definition.get_functioname(src, dst)  # xxx
+        subfn = self.array_definition._define(fnname, src, dst, e)
+        @self.registration.register(e.src_path, e.dst_path)
+        def use_subfn(context, value):
+            return subfn(value)
 
     def generate_minicode(self, src_field, dst_field, retry=None):
         try:
@@ -92,7 +88,11 @@ class CodeGenerator(object):
             if retry and isinstance(retry, e.__class__):
                 raise
             src = self.universe.find_definition(e.src_path[-1])
+            for p in reversed(e.src_path[:-1]):
+                src = s.Wrap(src, p)
             dst = self.universe.find_definition(e.dst_path[-1])
+            for p in reversed(e.dst_path[:-1]):
+                dst = s.Wrap(dst, p)
             self.on_array_conversion_notfound(src, dst, e)
             return self.generate_minicode(src_field, dst_field, retry=e)
         except minicode.TypeToTypeNotResolved as e:
@@ -182,7 +182,23 @@ class ArrayConvertDefinition(object):
         return self.registration.convertor
 
     def get_functioname(self, src, dst):
-        return "{}sTo{}s".format(langhelpers.titlize(src.name), langhelpers.titlize(dst.name))
+        src_part = "{}{}".format(src.name, self.get_suffixname(src))
+        dst_part = "{}{}".format(dst.name, self.get_suffixname(dst))
+        return "{}To{}".format(langhelpers.titlize(src_part), langhelpers.titlize(dst_part))
+
+    def get_suffix(self, t):
+        if t == "pointer":
+            return "Ref"
+        elif t == "array":
+            return "Many"
+        else:
+            return "Unknown"
+
+    def get_suffixname(self, src):
+        if hasattr(src, "wrap"):
+            return "{}{}".format(self.get_suffixname(src.definition), self.get_suffix(src.wrap))
+        else:
+            return ""
 
     def define(self, fnname, src_array, dst_array, parent=None):
         self.codegenerator.generate_minicode(src_array, dst_array)  # xxx
@@ -190,14 +206,15 @@ class ArrayConvertDefinition(object):
         func = self.cache[k]
         return func
 
-    def _define(self, fnname, src_struct, dst_struct, inner_code, parent=None):
-        k = ":".join(map(str, (src_struct.type_path, dst_struct.type_path)))
+    def _define(self, fnname, src, dst, e, parent=None):
+        inner_code = e.inner_code
+        k = ":".join(map(str, (e.src_path, e.dst_path)))
         func = self.cache[k] = s.Function(fnname, parent=parent or self.default_file)
         func.parent.add_function(func.name, func)
-        func.add_argument(src_struct.array, "src")
-        func.add_return_value(dst_struct.array)
+        func.add_argument(src, "src")
+        func.add_return_value(dst)
 
-        dst_array_type = s.Parameter("", dst_struct.array, parent=func)
+        dst_array_type = s.Parameter("", dst, parent=func)
 
         @func.write_function
         def write(m, iw):
@@ -242,7 +259,7 @@ class StructConvertDefinition(object):
         missing_fields = dict(dst_struct.fields.items())
 
         def iterate(src_struct, missing_fields):
-            for name, dst_field in list(missing_fields.items()):
+            for name, dst_field in sorted(missing_fields.items()):
                 if name in src_struct:
                     src_field = src_struct.fields[name]
                     code = self.codegenerator.generate_minicode(src_field, dst_field)

@@ -66,6 +66,10 @@ class ConvertorFromMinicode(object):
         else:
             return "{}({})".format(dst_type, value)
 
+    def iterate(self, context, value, src_type, dst_type):
+        pair = (src_type, dst_type)
+        return self.coerce_map[pair](context, value)
+
     def code_from_minicode(self, context, code, value):
         is_cast = False
         # optimization: x -> y; y -> z => z(x)
@@ -80,19 +84,21 @@ class ConvertorFromMinicode(object):
             coerce_buf.clear()
             return tmp
 
+        m = context.m
+
         for i, op in enumerate(code):
             if is_cast:
                 tmp = self.gensym()
-                context.m.stmt("{} := {}".format(tmp, value))
+                m.stmt("{} := {}".format(tmp, value))
                 value = tmp
                 is_cast = False
 
             if op[0] == "deref":
                 value = consume_buf(value)
-                with context.m.if_("{} != nil".format(value)):
+                with m.if_("{} != nil".format(value)):
                     value = "*({})".format(value)
                     tmp = self.gensym()
-                    context.m.stmt("{} := {}".format(tmp, value))
+                    m.stmt("{} := {}".format(tmp, value))
                     return self.code_from_minicode(context.new_context(), code[i + 1:], tmp)
             elif op[0] == "ref":
                 value = consume_buf(value)
@@ -106,12 +112,11 @@ class ConvertorFromMinicode(object):
                 value = consume_buf(value)
                 value = self.coerce(context, value, op[1], op[2])
                 is_cast = True
-            # elif op[0] == "iterate":
-            #     value = consume_buf(value)
-            #     # todo: deep nested
-            #     value = self.iterate(m, value, op[1:], src_field, dst_field)
-            #     is_cast = True
+            elif op[0][0] == "iterate":
+                value = consume_buf(value)
+                value = self.iterate(context, value, op[1], op[2])
+                is_cast = True
             else:
                 value = consume_buf(value)
                 raise NotImplementedError(op)
-        return context.m, consume_buf(value)
+        return m, consume_buf(value)
