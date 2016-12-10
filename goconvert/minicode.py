@@ -9,7 +9,9 @@ class TypeToTypeNotResolved(ValueError):
 
 
 class ArrayTypeToArrayTypeNotResolved(TypeToTypeNotResolved):
-    pass
+    def __init__(self, msg, src, dst, inner_code):
+        super().__init__(msg, src, dst)
+        self.inner_code = inner_code
 
 
 class MinicodeNormalizer(object):
@@ -118,14 +120,11 @@ class MinicodeGenerator(object):
         self.normalizer = MinicodeNormalizer(resolver)  # xxx
         self.verify = verify
 
-    def on_missing_mapping(self, src_path, dst_path, exc=TypeToTypeNotResolved):
-        msg = "mapping not found {!r} -> {!r}".format(src_path, dst_path)
-        raise exc(msg, src_path, dst_path)
-
     def gencode(self, src_path, dst_path):
         mapping_path = self.resolver.resolve(src_path, dst_path)
         if mapping_path is None:
-            return self.on_missing_mapping(src_path, dst_path)
+            msg = "mapping not found {!r} -> {!r}".format(src_path, dst_path)
+            raise TypeToTypeNotResolved(msg, src_path, dst_path)
         pre_gencode = self.normalizer.pre_gencode(mapping_path)
         code = self._gencode(pre_gencode)
         post_gencode = self.normalizer.post_gencode(code)
@@ -176,7 +175,9 @@ class MinicodeGenerator(object):
                 if self.resolver.has_relation(action.src, action.dst):
                     continue
                 else:
-                    return self.on_missing_mapping(action.src, action.dst)
+                    msg = "mapping not found {!r} -> {!r}".format(action.src, action.dst)
+                    raise TypeToTypeNotResolved(msg, action.src, action.dst)
+
             elif action.action == 'iterate':
                 self.verify_minicode(action.dst)
                 subcode = action.dst
@@ -200,6 +201,7 @@ class MinicodeGenerator(object):
                 src = ('array', *subcode[i].src)
                 dst = ('array', *subcode[j].dst)
                 if not self.resolver.has_relation(src, dst):
-                    return self.on_missing_mapping(src, dst, exc=ArrayTypeToArrayTypeNotResolved)
+                    msg = "array mapping not found {!r} -> {!r}".format(src, dst)
+                    raise ArrayTypeToArrayTypeNotResolved(msg, src, dst, subcode)
             else:
                 raise NotImplementedError(action)

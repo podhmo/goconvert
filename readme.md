@@ -4,9 +4,10 @@ todo
 - [x] struct
 - [x] pointer
 - [x] reading function definition, and use it
-- [] array
-- [] modify arguments of parent function, if child function need extra arguments
-- [] alias (+ with array)
+- [x] array
 - [] embed
-- [] multiple argument convert functions
+- [] tag
+- [] alias (+ with array)
 - [] adhoc fallback
+- [] multiple argument convert functions
+- [] modify arguments of parent function, if child function need extra arguments

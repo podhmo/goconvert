@@ -91,7 +91,11 @@ class Module(object):
         self.members.update(same.members)
 
     def read_file(self, name, file):
-        result = self.files[name] = self.reader.read_file(file, parent=self)
+        if name in self.files:
+            result = self.files[name]
+            result.merge(self.reader.read_file(file, parent=self))
+        else:
+            result = self.files[name] = self.reader.read_file(file, parent=self)
         return result
 
     def normalize(self):
@@ -133,6 +137,13 @@ class File(object):
         self.members = {}
 
     __repr__ = repr_structure
+
+    def merge(self, other):
+        self.aliases.update(other.aliases)
+        self.structs.update(other.structs)
+        self.interfaces.update(other.interfaces)
+        self.functions.update(other.functions)
+        self.members.update(other.members)
 
     @property
     def package_name(self):
@@ -252,13 +263,18 @@ class Alias(object):
         return self.parent
 
 
-class Pointer(object):
-    def __init__(self, definition):
+class Wrap(object):
+    def __init__(self, definition, wrap):
         self.definition = definition
+        self.wrap = wrap
+
+    def __repr__(self):
+        fmt = "<{self.wrap} {self.definition!r}>"
+        return fmt.format(self=self, id=hex(id(self)))
 
     @reify
     def type_path(self):
-        r = ["pointer"]
+        r = [self.wrap]
         r.extend(self.definition.type_path)
         return r
 
@@ -282,7 +298,11 @@ class Struct(object):
 
     @reify
     def pointer(self):
-        return Pointer(self)
+        return Wrap(self, "pointer")
+
+    @reify
+    def array(self):
+        return Wrap(self, "array")
 
     @property
     def package_name(self):
