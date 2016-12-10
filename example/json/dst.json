@@ -353,6 +353,14 @@
         "../dst/user.go": {
           "name": "../dst/user.go",
           "alias": {
+            "Age": {
+              "name": "Age",
+              "original": {
+                "kind": "primitive",
+                "value": "int64"
+              },
+              "candidates": null
+            },
             "Email": {
               "name": "Email",
               "original": {
@@ -362,11 +370,33 @@
               },
               "candidates": null
             },
+            "Father": {
+              "name": "Father",
+              "original": {
+                "kind": "pointer",
+                "value": {
+                  "kind": "primitive",
+                  "value": "User"
+                }
+              },
+              "candidates": null
+            },
             "ID": {
               "name": "ID",
               "original": {
                 "kind": "primitive",
                 "value": "string"
+              },
+              "candidates": null
+            },
+            "SkillSet": {
+              "name": "SkillSet",
+              "original": {
+                "kind": "array",
+                "value": {
+                  "kind": "primitive",
+                  "value": "Skill"
+                }
               },
               "candidates": null
             }
@@ -462,6 +492,15 @@
                   },
                   "embed": false
                 },
+                "Age": {
+                  "name": "Age",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Age"
+                  },
+                  "embed": false
+                },
                 "Email": {
                   "name": "Email",
                   "tags": {},
@@ -483,6 +522,15 @@
                       "kind": "primitive",
                       "value": "ID"
                     }
+                  },
+                  "embed": false
+                },
+                "Father": {
+                  "name": "Father",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Father"
                   },
                   "embed": false
                 },
@@ -522,6 +570,18 @@
                   },
                   "embed": false
                 },
+                "Mother": {
+                  "name": "Mother",
+                  "tags": {},
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "User"
+                    }
+                  },
+                  "embed": false
+                },
                 "Name": {
                   "name": "Name",
                   "tags": {},
@@ -542,6 +602,30 @@
                     "value": {
                       "kind": "primitive",
                       "value": "Skill"
+                    }
+                  },
+                  "embed": false
+                },
+                "Skills6": {
+                  "name": "Skills6",
+                  "tags": {},
+                  "type": {
+                    "kind": "primitive",
+                    "value": "SkillSet"
+                  },
+                  "embed": false
+                },
+                "Skills7": {
+                  "name": "Skills7",
+                  "tags": {},
+                  "type": {
+                    "kind": "array",
+                    "value": {
+                      "kind": "pointer",
+                      "value": {
+                        "kind": "primitive",
+                        "value": "Skill"
+                      }
                     }
                   },
                   "embed": false

@@ -4171,6 +4171,36 @@
                 "value": "Email"
               },
               "candidates": null
+            },
+            "Mother": {
+              "name": "Mother",
+              "original": {
+                "kind": "pointer",
+                "value": {
+                  "kind": "primitive",
+                  "value": "User"
+                }
+              },
+              "candidates": null
+            },
+            "S": {
+              "name": "S",
+              "original": {
+                "kind": "primitive",
+                "value": "Skill"
+              },
+              "candidates": null
+            },
+            "SkillSet": {
+              "name": "SkillSet",
+              "original": {
+                "kind": "array",
+                "value": {
+                  "kind": "primitive",
+                  "value": "Skill"
+                }
+              },
+              "candidates": null
             }
           },
           "struct": {
@@ -4237,6 +4267,19 @@
                   },
                   "embed": false
                 },
+                "Age": {
+                  "name": "Age",
+                  "tags": {
+                    "json": [
+                      "age"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "int"
+                  },
+                  "embed": false
+                },
                 "Email": {
                   "name": "Email",
                   "tags": {
@@ -4268,6 +4311,25 @@
                       "kind": "selector",
                       "prefix": "bson",
                       "value": "ObjectId"
+                    }
+                  },
+                  "embed": false
+                },
+                "Father": {
+                  "name": "Father",
+                  "tags": {
+                    "bson": [
+                      "-"
+                    ],
+                    "json": [
+                      "father"
+                    ]
+                  },
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "User"
                     }
                   },
                   "embed": false
@@ -4346,6 +4408,22 @@
                   },
                   "embed": false
                 },
+                "Mother": {
+                  "name": "Mother",
+                  "tags": {
+                    "bson": [
+                      "-"
+                    ],
+                    "json": [
+                      "mother"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "Mother"
+                  },
+                  "embed": false
+                },
                 "Name": {
                   "name": "Name",
                   "tags": {
@@ -4375,6 +4453,123 @@
                       "kind": "primitive",
                       "value": "Skill"
                     }
+                  },
+                  "embed": false
+                },
+                "Skills2": {
+                  "name": "Skills2",
+                  "tags": {
+                    "bson": [
+                      "skills2"
+                    ],
+                    "json": [
+                      "skills2"
+                    ]
+                  },
+                  "type": {
+                    "kind": "pointer",
+                    "value": {
+                      "kind": "array",
+                      "value": {
+                        "kind": "primitive",
+                        "value": "Skill"
+                      }
+                    }
+                  },
+                  "embed": false
+                },
+                "Skills3": {
+                  "name": "Skills3",
+                  "tags": {
+                    "bson": [
+                      "skills3"
+                    ],
+                    "json": [
+                      "skills3"
+                    ]
+                  },
+                  "type": {
+                    "kind": "array",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "Skill"
+                    }
+                  },
+                  "embed": false
+                },
+                "Skills4": {
+                  "name": "Skills4",
+                  "tags": {
+                    "bson": [
+                      "skills4"
+                    ],
+                    "json": [
+                      "skills4"
+                    ]
+                  },
+                  "type": {
+                    "kind": "array",
+                    "value": {
+                      "kind": "pointer",
+                      "value": {
+                        "kind": "primitive",
+                        "value": "Skill"
+                      }
+                    }
+                  },
+                  "embed": false
+                },
+                "Skills5": {
+                  "name": "Skills5",
+                  "tags": {
+                    "bson": [
+                      "skills5"
+                    ],
+                    "json": [
+                      "skills5"
+                    ]
+                  },
+                  "type": {
+                    "kind": "array",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "Skill"
+                    }
+                  },
+                  "embed": false
+                },
+                "Skills6": {
+                  "name": "Skills6",
+                  "tags": {
+                    "bson": [
+                      "skills6"
+                    ],
+                    "json": [
+                      "skills6"
+                    ]
+                  },
+                  "type": {
+                    "kind": "array",
+                    "value": {
+                      "kind": "primitive",
+                      "value": "Skill"
+                    }
+                  },
+                  "embed": false
+                },
+                "Skills7": {
+                  "name": "Skills7",
+                  "tags": {
+                    "bson": [
+                      "skills7"
+                    ],
+                    "json": [
+                      "skills7"
+                    ]
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "value": "SkillSet"
                   },
                   "embed": false
                 },

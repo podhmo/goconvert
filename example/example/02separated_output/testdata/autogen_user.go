@@ -18,6 +18,19 @@ func Address(modify func(value *src.Address)) *src.Address {
 	return &value
 }
 
+// EmptyFullUser : returns empty FullUser
+func EmptyFullUser() src.FullUser {
+	value := src.FullUser{}
+	return value
+}
+
+// FullUser : creates FullUser with modify function
+func FullUser(modify func(value *src.FullUser)) *src.FullUser {
+	value := EmptyFullUser()
+	modify(&value)
+	return &value
+}
+
 // EmptyUser : returns empty User
 func EmptyUser() src.User {
 	value := src.User{
