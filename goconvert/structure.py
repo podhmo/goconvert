@@ -597,6 +597,9 @@ class Parameters(object):
             k = self.idx_map[k]
         return self.args_dict[k]
 
+    def __len__(self):
+        return len(self.args_dict)
+
     @property
     def world(self):
         return self.parent.world

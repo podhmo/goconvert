@@ -186,6 +186,10 @@ class CoerceRegistration(object):
             if skip and skip(maybe_fn):
                 continue
             if isinstance(maybe_fn, s.Function):
+                if len(maybe_fn.args) == 0 or len(maybe_fn.returns) == 0:
+                    continue
+
+                @self.register(maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path)
                 def call(context, value, fn=maybe_fn, module=module):
                     if fn.module == module:
                         return fn(value)
