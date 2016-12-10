@@ -62,8 +62,8 @@ class CodeGenerator(object):
         return minicode.MinicodeGenerator(self.registration.resolver)
 
     def on_struct_conversion_notfound(self, src, dst, e):
-        # TODO: alias
         if isinstance(src, s.Struct) and isinstance(dst, s.Struct):
+            self.registration.resolver.add_relation(src.pointer.type_path, dst.pointer.type_path)  # for recursive type
             fnname = self.struct_definition.get_functioname(src, dst)
             subfn = self.struct_definition.define(fnname, src, dst)
 
@@ -74,8 +74,7 @@ class CodeGenerator(object):
             raise NotImplementedError(e)
 
     def on_array_conversion_notfound(self, src, dst, e):
-        # TODO: alias
-        fnname = self.array_definition.get_functioname(src, dst)  # xxx
+        fnname = self.array_definition.get_functioname(src, dst)
         subfn = self.array_definition._define(fnname, src, dst, e)
 
         @self.registration.register(e.src_path, e.dst_path)
@@ -88,21 +87,51 @@ class CodeGenerator(object):
         except minicode.ArrayTypeToArrayTypeNotResolved as e:
             if retry and isinstance(retry, e.__class__):
                 raise
+            retry = e
             src = self.universe.find_definition(e.src_path[-1])
+            if isinstance(src, s.Alias):
+                src = src.original_definition
+                retry = None
             for p in reversed(e.src_path[:-1]):
                 src = s.Wrap(src, p)
+
             dst = self.universe.find_definition(e.dst_path[-1])
+            if isinstance(dst, s.Alias):
+                dst = dst.original_definition
+                retry = None
             for p in reversed(e.dst_path[:-1]):
                 dst = s.Wrap(dst, p)
+
+            if src.name.endswith(("32", "64")) or dst.name.endswith(("32", "64")):
+                normalized_name_src = src.name.replace("32", "").replace("64", "")
+                normalized_name_dst = dst.name.replace("32", "").replace("64", "")
+                if normalized_name_src == normalized_name_dst:
+                    self.registration.resolver.add_relation(src.type_path, dst.type_path)
+                    return self.generate_minicode(src_field, dst_field, retry=None)
+
             self.on_array_conversion_notfound(src, dst, e)
-            return self.generate_minicode(src_field, dst_field, retry=e)
+            return self.generate_minicode(src_field, dst_field, retry=retry)
         except minicode.TypeToTypeNotResolved as e:
             if retry and isinstance(retry, e.__class__):
                 raise
+            retry = e
             src = self.universe.find_definition(e.src_path[-1])
+            if isinstance(src, s.Alias):
+                src = src.original_definition
+
             dst = self.universe.find_definition(e.dst_path[-1])
+            if isinstance(dst, s.Alias):
+                dst = dst.original_definition
+
+            if src.name.endswith(("32", "64")) or dst.name.endswith(("32", "64")):
+                normalized_name_src = src.name.replace("32", "").replace("64", "")
+                normalized_name_dst = dst.name.replace("32", "").replace("64", "")
+                if normalized_name_src == normalized_name_dst:
+                    self.registration.resolver.add_relation(src.type_path, dst.type_path)
+                    return self.generate_minicode(src_field, dst_field, retry=e)
+
             self.on_struct_conversion_notfound(src, dst, e)
-            return self.generate_minicode(src_field, dst_field, retry=e)
+            return self.generate_minicode(src_field, dst_field, retry=retry)
 
 
 @with_implementation
@@ -141,6 +170,7 @@ class CoerceRegistration(object):
         triples = []
         for name, maybe_fn in module.members.items():
             if isinstance(maybe_fn, s.Function):
+                @self.register(maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path)
                 def call(context, value, fn=maybe_fn, module=module):
                     if fn.module == module:
                         return fn(value)
@@ -156,7 +186,6 @@ class CoerceRegistration(object):
             if skip and skip(maybe_fn):
                 continue
             if isinstance(maybe_fn, s.Function):
-                @self.register(maybe_fn.args[0].type_path, maybe_fn.returns[0].type_path)
                 def call(context, value, fn=maybe_fn, module=module):
                     if fn.module == module:
                         return fn(value)

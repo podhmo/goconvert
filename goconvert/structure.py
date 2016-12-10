@@ -29,6 +29,8 @@ class Universe(object):
         return self.modules[fullname]
 
     def find_definition(self, fullname):
+        if "." not in fullname:
+            return Type(fullname)
         module_path, name = fullname.rsplit(".", 1)
         return self.find_module(module_path)[name]
 
@@ -199,6 +201,10 @@ class Type(object):
         self.fullname = fullname or name
 
     __repr__ = repr_structure
+
+    @reify
+    def type_path(self):
+        return (self.name, )
 
 
 class Alias(object):
