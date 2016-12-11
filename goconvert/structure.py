@@ -26,7 +26,7 @@ class Universe(object):
         self.modules = self.modules.new_child(world.modules_by_fullname)
 
     def find_module(self, fullname):
-        return self.modules[fullname]
+        return self.modules[fullname.rstrip("/")]
 
     def find_definition(self, fullname):
         if "." not in fullname:

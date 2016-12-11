@@ -11,7 +11,7 @@ class Reader(object):
     def read_world(self, data, parent=None):
         parent = parent or self.universe
         world = structure.World(parent=parent, reader=self)
-        for name, module in (data.get("module") or []).items():
+        for name, module in (data.get("module") or {}).items():
             world.read_module(name, module)
         world.normalize()
         self.universe.add_world(self.gensym(), world)

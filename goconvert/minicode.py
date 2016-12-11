@@ -1,4 +1,6 @@
+import logging
 from .typeresolver import Action
+logger = logging.getLogger(__name__)
 
 
 class TypeToTypeNotResolved(ValueError):
@@ -124,6 +126,7 @@ class MinicodeGenerator(object):
         self.verify = verify
 
     def gencode(self, src_path, dst_path):
+        logger.debug("gencode: %s -> %s", src_path, dst_path)
         mapping_path = self.resolver.resolve(src_path, dst_path)
         if mapping_path is None:
             msg = "mapping not found {!r} -> {!r}".format(src_path, dst_path)

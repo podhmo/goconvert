@@ -1,9 +1,11 @@
+import logging
 from .typeresolver import TypeMappingResolver
 from . import minicode
 from . import convertor as c
 from . import structure as s
 from . import langhelpers
 from .langhelpers import reify
+logger = logging.getLogger(__name__)
 
 
 class Impl:
@@ -65,7 +67,9 @@ class CodeGenerator(object):
         if isinstance(src, s.Struct) and isinstance(dst, s.Struct):
             self.registration.resolver.add_relation(src.pointer.type_path, dst.pointer.type_path)  # for recursive type
             fnname = self.struct_definition.get_functioname(src, dst)
+            logger.info("start register function %s: %s -> %s", fnname, src.pointer.type_path, dst.pointer.type_path)
             subfn = self.struct_definition.define(fnname, src, dst)
+            logger.info("end   register function %s: %s -> %s", fnname, src.pointer.type_path, dst.pointer.type_path)
 
             @self.registration.register(src.pointer.type_path, dst.pointer.type_path)
             def use_subfn(context, value):
@@ -75,7 +79,9 @@ class CodeGenerator(object):
 
     def on_array_conversion_notfound(self, src, dst, e):
         fnname = self.array_definition.get_functioname(src, dst)
+        logger.info("start register function %s: %s -> %s", fnname, e.src_path, e.dst_path)
         subfn = self.array_definition._define(fnname, src, dst, e)
+        logger.info("end   register function %s: %s -> %s", fnname, e.src_path, e.dst_path)
 
         @self.registration.register(e.src_path, e.dst_path)
         def use_subfn(context, value):
@@ -296,6 +302,7 @@ class StructConvertDefinition(object):
             for name, dst_field in sorted(missing_fields.items()):
                 if name in src_struct:
                     src_field = src_struct.fields[name]
+                    logger.debug("resolve: %s %s -> %s %s", name, src_field.type_path, name, dst_field.type_path)
                     code = self.codegenerator.generate_minicode(src_field, dst_field)
                     code_list.append((src_field, dst_field, code))
                     missing_fields.pop(name)
@@ -340,5 +347,8 @@ class ConvertBuilder:
 
     def build_struct_convert(self, src, dst, name=None):
         struct_definition = self.registry.get_implementation(Impl.struct)
-        name = name or struct_definition.get_functioname(src, dst)
-        return struct_definition.define(name, src, dst)
+        fnname = name or struct_definition.get_functioname(src, dst)
+        logger.info("start register function %s: %s -> %s", fnname, src.type_path, dst.type_path)
+        func = struct_definition.define(fnname, src, dst)
+        logger.info("end   register function %s: %s -> %s", fnname, src.type_path, dst.type_path)
+        return func
