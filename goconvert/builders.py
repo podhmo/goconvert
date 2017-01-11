@@ -66,7 +66,7 @@ class CodeGenerator(object):
     def on_struct_conversion_notfound(self, src, dst, e):
         if isinstance(src, s.Struct) and isinstance(dst, s.Struct):
             self.registration.resolver.add_relation(src.pointer.type_path, dst.pointer.type_path)  # for recursive type
-            fnname = self.struct_definition.get_functioname(src, dst)
+            fnname = self.struct_definition.get_functionname(src, dst)
             logger.info("start register function %s: %s -> %s", fnname, src.pointer.type_path, dst.pointer.type_path)
             subfn = self.struct_definition.define(fnname, src, dst)
             logger.info("end   register function %s: %s -> %s", fnname, src.pointer.type_path, dst.pointer.type_path)
@@ -78,7 +78,7 @@ class CodeGenerator(object):
             raise NotImplementedError(e)
 
     def on_array_conversion_notfound(self, src, dst, e):
-        fnname = self.array_definition.get_functioname(src, dst)
+        fnname = self.array_definition.get_functionname(src, dst)
         logger.info("start register function %s: %s -> %s", fnname, e.src_path, e.dst_path)
         subfn = self.array_definition._define(fnname, src, dst, e)
         logger.info("end   register function %s: %s -> %s", fnname, e.src_path, e.dst_path)
@@ -221,7 +221,7 @@ class ArrayConvertDefinition(object):
     def convertor(self):
         return self.registration.convertor
 
-    def get_functioname(self, src, dst):
+    def get_functionname(self, src, dst):
         src_part = "{}{}".format(src.name, self.get_suffixname(src))
         dst_part = "{}{}".format(dst.name, self.get_suffixname(dst))
         return "{}To{}".format(langhelpers.titlize(src_part), langhelpers.titlize(dst_part))
@@ -285,7 +285,7 @@ class StructConvertDefinition(object):
     def convertor(self):
         return self.registration.convertor
 
-    def get_functioname(self, src, dst):
+    def get_functionname(self, src, dst):
         return "{}To{}".format(langhelpers.titlize(src.name), langhelpers.titlize(dst.name))
 
     def define(self, fnname, src_struct, dst_struct, parent=None):
@@ -347,7 +347,7 @@ class ConvertBuilder:
 
     def build_struct_convert(self, src, dst, name=None):
         struct_definition = self.registry.get_implementation(Impl.struct)
-        fnname = name or struct_definition.get_functioname(src, dst)
+        fnname = name or struct_definition.get_functionname(src, dst)
         logger.info("start register function %s: %s -> %s", fnname, src.type_path, dst.type_path)
         func = struct_definition.define(fnname, src, dst)
         logger.info("end   register function %s: %s -> %s", fnname, src.type_path, dst.type_path)
