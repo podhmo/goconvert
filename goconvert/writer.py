@@ -65,10 +65,10 @@ class Writer(object):
         m = m or self.m
         if iw:
             for p in fn.args:
-                if hasattr(p.definition, "fullname"):
+                if hasattr(p.definition, "fullname") and "." in p.definition.fullname:  # xxx
                     iw.import_(p.definition.module)
             for p in fn.returns:
-                if hasattr(p.definition, "fullname"):
+                if hasattr(p.definition, "fullname") and "." in p.definition.fullname:  # xxx
                     iw.import_(p.definition.module)
         if fn.body_fn:
             return fn.body_fn(m, iw) or m

@@ -224,7 +224,8 @@ class ArrayConvertDefinition(object):
     def get_functionname(self, src, dst):
         src_part = "{}{}".format(src.name, self.get_suffixname(src))
         dst_part = "{}{}".format(dst.name, self.get_suffixname(dst))
-        return "{}To{}".format(langhelpers.titlize(src_part), langhelpers.titlize(dst_part))
+        # return "{}To{}".format(langhelpers.titlize(src_part), langhelpers.titlize(dst_part))
+        return "Convert{}".format(langhelpers.titlize(src_part))
 
     def get_suffix(self, t):
         if t == "pointer":
@@ -286,7 +287,8 @@ class StructConvertDefinition(object):
         return self.registration.convertor
 
     def get_functionname(self, src, dst):
-        return "{}To{}".format(langhelpers.titlize(src.name), langhelpers.titlize(dst.name))
+        return "Convert{}".format(langhelpers.titlize(dst.name))
+        # return "{}To{}".format(langhelpers.titlize(src.name), langhelpers.titlize(dst.name))
 
     def define(self, fnname, src_struct, dst_struct, parent=None):
         func = s.Function(fnname, parent=parent or self.default_file)
