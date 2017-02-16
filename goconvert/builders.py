@@ -320,6 +320,8 @@ class StructConvertDefinition(object):
         def write(m, iw):
             m.comment("{} :".format(func.name))
             with m.func(func.name, func.args, return_=func.returns):
+                with m.if_("from == nil"):
+                    m.return_("nil")
                 m.stmt("to := &{name}{{}}".format(name=dst_struct_type.type_expr))
                 for src_field, dst_field, code in code_list:
                     value = "from.{}".format(src_field.name)
