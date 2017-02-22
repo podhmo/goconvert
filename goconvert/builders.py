@@ -208,7 +208,8 @@ class CoerceRegistration(object):
 class ArrayConvertDefinition(object):
     impl_type = Impl.array
 
-    def __init__(self, registry, module):
+    def __init__(self, registry, module, prefix="Convert"):
+        self.prefix = prefix
         self.module = module  # output module
         self.registry = registry
         self.default_file = self.module.read_file(
@@ -225,7 +226,7 @@ class ArrayConvertDefinition(object):
         src_part = "{}{}".format(src.name, self.get_suffixname(src))
         dst_part = "{}{}".format(dst.name, self.get_suffixname(dst))
         # return "{}To{}".format(langhelpers.titlize(src_part), langhelpers.titlize(dst_part))
-        return "Convert{}".format(langhelpers.titlize(src_part))
+        return "{}{}".format(self.prefix, langhelpers.titlize(src_part))
 
     def get_suffix(self, t):
         if t == "pointer":
@@ -274,7 +275,8 @@ class ArrayConvertDefinition(object):
 class StructConvertDefinition(object):
     impl_type = Impl.struct
 
-    def __init__(self, registry, module):
+    def __init__(self, registry, module, prefix="Convert"):
+        self.prefix = prefix
         self.registry = registry
         self.module = module  # output module
         self.default_file = self.module.read_file(
@@ -287,7 +289,7 @@ class StructConvertDefinition(object):
         return self.registration.convertor
 
     def get_functionname(self, src, dst):
-        return "Convert{}".format(langhelpers.titlize(dst.name))
+        return "{}{}".format(self.prefix, langhelpers.titlize(dst.name))
         # return "{}To{}".format(langhelpers.titlize(src.name), langhelpers.titlize(dst.name))
 
     def define(self, fnname, src_struct, dst_struct, parent=None):
@@ -333,18 +335,18 @@ class StructConvertDefinition(object):
         return func
 
 
-def get_convert_registry(universe, module):
+def get_convert_registry(universe, module, prefix=None):
     registry = Registry(universe)
-    StructConvertDefinition(registry, module)
-    ArrayConvertDefinition(registry, module)
+    StructConvertDefinition(registry, module, prefix=prefix)
+    ArrayConvertDefinition(registry, module, prefix=prefix)
     CodeGenerator(registry)
     CoerceRegistration(registry)
     return registry
 
 
 class ConvertBuilder:
-    def __init__(self, universe, module, registry_factory=get_convert_registry):
-        self.registry = registry_factory(universe, module)
+    def __init__(self, universe, module, registry_factory=get_convert_registry, prefix=None):
+        self.registry = registry_factory(universe, module, prefix=prefix)
 
     def register_from_module(self, module, skip=lambda fn: "autogen_" in fn.file.name):
         return self.registry.get_implementation(Impl.registration).register_from_module(module, skip)
